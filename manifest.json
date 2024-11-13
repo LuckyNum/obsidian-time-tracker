@@ -1,0 +1,10 @@
+{
+  "id": "shadcn-vue-template",
+  "name": "Shadcn Vue Template",
+  "description": "Obsidian + Shadcn + Vue + Vite",
+  "version": "1.0.1",
+  "author": "LuckyNum",
+  "authorUrl": "https://github.com/LuckyNum/",
+  "isDesktopOnly": false,
+  "minAppVersion": "0.14.1"
+}

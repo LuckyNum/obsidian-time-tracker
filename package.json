@@ -1,0 +1,43 @@
+{
+  "name": "ob-shadcn-vue",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "dev": "vite build --watch --mode=development",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@radix-icons/vue": "^1.0.0",
+    "@tailwindcss/container-queries": "^0.1.1",
+    "@unovis/ts": "1.5.0-beta.0",
+    "@unovis/vue": "1.5.0-beta.0",
+    "@vueuse/core": "^11.2.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "obsidian": "^1.7.2",
+    "radix-vue": "^1.9.9",
+    "tailwind-merge": "^2.5.4",
+    "vue": "^3.5.12"
+  },
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-replace": "^6.0.1",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@types/node": "^22.9.0",
+    "@vitejs/plugin-vue": "^5.1.4",
+    "autoprefixer": "^10.4.20",
+    "less": "^4.2.0",
+    "postcss": "^8.4.47",
+    "postcss-discard": "^2.0.0",
+    "postcss-prefix-selector": "^2.1.0",
+    "tailwindcss": "^3.4.14",
+    "tailwindcss-animate": "^1.0.7",
+    "tailwindcss-scoped-preflight": "^3.4.6",
+    "typescript": "~5.6.2",
+    "vite": "^5.4.10",
+    "vue-tsc": "^2.1.8"
+  }
+}
