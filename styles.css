@@ -485,45 +485,14 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   .custom-next * ,.custom-dialog *, .custom-select *, *:where(.custom-dialog,.custom-select) {
   border-color: hsl(var(--border));
 }
-.custom-next .container ,.custom-dialog .container, .custom-select .container, .container:where(.custom-dialog,.custom-select) {
-  width: 100%;
-  margin-right: auto;
-  margin-left: auto;
-  padding-right: 2rem;
-  padding-left: 2rem;
-}
-@container (min-width: 1400px) {
-
-  .custom-next .container ,.custom-dialog .container, .custom-select .container, .container:where(.custom-dialog,.custom-select) {
-    max-width: 1400px;
-  }
-}
 .custom-next .col-span-3 ,.custom-dialog .col-span-3, .custom-select .col-span-3, .col-span-3:where(.custom-dialog,.custom-select) {
   grid-column: span 3 / span 3;
 }
 .custom-next .col-span-4 ,.custom-dialog .col-span-4, .custom-select .col-span-4, .col-span-4:where(.custom-dialog,.custom-select) {
   grid-column: span 4 / span 4;
 }
-.custom-next .\!mr-2 ,.custom-dialog .\!mr-2, .custom-select .\!mr-2, .\!mr-2:where(.custom-dialog,.custom-select) {
-  margin-right: 0.5rem !important;
-}
-.custom-next .ml-4 ,.custom-dialog .ml-4, .custom-select .ml-4, .ml-4:where(.custom-dialog,.custom-select) {
-  margin-left: 1rem;
-}
-.custom-next .ml-auto ,.custom-dialog .ml-auto, .custom-select .ml-auto, .ml-auto:where(.custom-dialog,.custom-select) {
-  margin-left: auto;
-}
-.custom-next .mr-2 ,.custom-dialog .mr-2, .custom-select .mr-2, .mr-2:where(.custom-dialog,.custom-select) {
-  margin-right: 0.5rem;
-}
-.custom-next .mt-2 ,.custom-dialog .mt-2, .custom-select .mt-2, .mt-2:where(.custom-dialog,.custom-select) {
-  margin-top: 0.5rem;
-}
 .custom-next .flex ,.custom-dialog .flex, .custom-select .flex, .flex:where(.custom-dialog,.custom-select) {
   display: flex;
-}
-.custom-next .\!inline-flex ,.custom-dialog .\!inline-flex, .custom-select .\!inline-flex, .\!inline-flex:where(.custom-dialog,.custom-select) {
-  display: inline-flex !important;
 }
 .custom-next .inline-flex ,.custom-dialog .inline-flex, .custom-select .inline-flex, .inline-flex:where(.custom-dialog,.custom-select) {
   display: inline-flex;
@@ -531,17 +500,11 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 .custom-next .grid ,.custom-dialog .grid, .custom-select .grid, .grid:where(.custom-dialog,.custom-select) {
   display: grid;
 }
+.custom-next .hidden ,.custom-dialog .hidden, .custom-select .hidden, .hidden:where(.custom-dialog,.custom-select) {
+  display: none;
+}
 .custom-next .h-10 ,.custom-dialog .h-10, .custom-select .h-10, .h-10:where(.custom-dialog,.custom-select) {
   height: 2.5rem;
-}
-.custom-next .h-16 ,.custom-dialog .h-16, .custom-select .h-16, .h-16:where(.custom-dialog,.custom-select) {
-  height: 4rem;
-}
-.custom-next .h-2\.5 ,.custom-dialog .h-2\.5, .custom-select .h-2\.5, .h-2\.5:where(.custom-dialog,.custom-select) {
-  height: 0.625rem;
-}
-.custom-next .h-32 ,.custom-dialog .h-32, .custom-select .h-32, .h-32:where(.custom-dialog,.custom-select) {
-  height: 8rem;
 }
 .custom-next .h-4 ,.custom-dialog .h-4, .custom-select .h-4, .h-4:where(.custom-dialog,.custom-select) {
   height: 1rem;
@@ -555,59 +518,26 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 .custom-next .h-9 ,.custom-dialog .h-9, .custom-select .h-9, .h-9:where(.custom-dialog,.custom-select) {
   height: 2.25rem;
 }
-.custom-next .h-\[400px\] ,.custom-dialog .h-\[400px\], .custom-select .h-\[400px\], .h-\[400px\]:where(.custom-dialog,.custom-select) {
-  height: 400px;
-}
-.custom-next .h-full ,.custom-dialog .h-full, .custom-select .h-full, .h-full:where(.custom-dialog,.custom-select) {
-  height: 100%;
-}
-.custom-next .w-10 ,.custom-dialog .w-10, .custom-select .w-10, .w-10:where(.custom-dialog,.custom-select) {
-  width: 2.5rem;
-}
-.custom-next .w-16 ,.custom-dialog .w-16, .custom-select .w-16, .w-16:where(.custom-dialog,.custom-select) {
-  width: 4rem;
-}
-.custom-next .w-2\.5 ,.custom-dialog .w-2\.5, .custom-select .w-2\.5, .w-2\.5:where(.custom-dialog,.custom-select) {
-  width: 0.625rem;
-}
-.custom-next .w-32 ,.custom-dialog .w-32, .custom-select .w-32, .w-32:where(.custom-dialog,.custom-select) {
-  width: 8rem;
-}
 .custom-next .w-4 ,.custom-dialog .w-4, .custom-select .w-4, .w-4:where(.custom-dialog,.custom-select) {
   width: 1rem;
 }
 .custom-next .w-9 ,.custom-dialog .w-9, .custom-select .w-9, .w-9:where(.custom-dialog,.custom-select) {
   width: 2.25rem;
 }
-.custom-next .w-full ,.custom-dialog .w-full, .custom-select .w-full, .w-full:where(.custom-dialog,.custom-select) {
-  width: 100%;
-}
-.custom-next .w-max ,.custom-dialog .w-max, .custom-select .w-max, .w-max:where(.custom-dialog,.custom-select) {
-  width: -moz-max-content;
-  width: max-content;
-}
-.custom-next .min-w-\[180px\] ,.custom-dialog .min-w-\[180px\], .custom-select .min-w-\[180px\], .min-w-\[180px\]:where(.custom-dialog,.custom-select) {
-  min-width: 180px;
-}
 .custom-next .flex-1 ,.custom-dialog .flex-1, .custom-select .flex-1, .flex-1:where(.custom-dialog,.custom-select) {
   flex: 1 1 0%;
 }
-.custom-next .shrink-0 ,.custom-dialog .shrink-0, .custom-select .shrink-0, .shrink-0:where(.custom-dialog,.custom-select) {
-  flex-shrink: 0;
+.custom-next .flex-shrink ,.custom-dialog .flex-shrink, .custom-select .flex-shrink, .flex-shrink:where(.custom-dialog,.custom-select) {
+  flex-shrink: 1;
 }
-.custom-next .select-none ,.custom-dialog .select-none, .custom-select .select-none, .select-none:where(.custom-dialog,.custom-select) {
-  -webkit-user-select: none;
-     -moz-user-select: none;
-          user-select: none;
+.custom-next .transform ,.custom-dialog .transform, .custom-select .transform, .transform:where(.custom-dialog,.custom-select) {
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 .custom-next .flex-row ,.custom-dialog .flex-row, .custom-select .flex-row, .flex-row:where(.custom-dialog,.custom-select) {
   flex-direction: row;
 }
 .custom-next .flex-col ,.custom-dialog .flex-col, .custom-select .flex-col, .flex-col:where(.custom-dialog,.custom-select) {
   flex-direction: column;
-}
-.custom-next .items-end ,.custom-dialog .items-end, .custom-select .items-end, .items-end:where(.custom-dialog,.custom-select) {
-  align-items: flex-end;
 }
 .custom-next .items-center ,.custom-dialog .items-center, .custom-select .items-center, .items-center:where(.custom-dialog,.custom-select) {
   align-items: center;
@@ -618,24 +548,13 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 .custom-next .justify-between ,.custom-dialog .justify-between, .custom-select .justify-between, .justify-between:where(.custom-dialog,.custom-select) {
   justify-content: space-between;
 }
-.custom-next .gap-1 ,.custom-dialog .gap-1, .custom-select .gap-1, .gap-1:where(.custom-dialog,.custom-select) {
-  gap: 0.25rem;
-}
 .custom-next .gap-4 ,.custom-dialog .gap-4, .custom-select .gap-4, .gap-4:where(.custom-dialog,.custom-select) {
   gap: 1rem;
-}
-.custom-next .gap-y-1\.5 ,.custom-dialog .gap-y-1\.5, .custom-select .gap-y-1\.5, .gap-y-1\.5:where(.custom-dialog,.custom-select) {
-  row-gap: 0.375rem;
 }
 .custom-next .space-y-0 > :not([hidden]) ~ :not([hidden]) ,.custom-dialog .space-y-0 > :not([hidden]) ~ :not([hidden]), .custom-select .space-y-0 > :not([hidden]) ~ :not([hidden]), .space-y-0 > :not([hidden]) ~ :not([hidden]):where(.custom-dialog,.custom-select) {
   --tw-space-y-reverse: 0;
   margin-top: calc(0px * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(0px * var(--tw-space-y-reverse));
-}
-.custom-next .space-y-1 > :not([hidden]) ~ :not([hidden]) ,.custom-dialog .space-y-1 > :not([hidden]) ~ :not([hidden]), .custom-select .space-y-1 > :not([hidden]) ~ :not([hidden]), .space-y-1 > :not([hidden]) ~ :not([hidden]):where(.custom-dialog,.custom-select) {
-  --tw-space-y-reverse: 0;
-  margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
 }
 .custom-next .space-y-2 > :not([hidden]) ~ :not([hidden]) ,.custom-dialog .space-y-2 > :not([hidden]) ~ :not([hidden]), .custom-select .space-y-2 > :not([hidden]) ~ :not([hidden]), .space-y-2 > :not([hidden]) ~ :not([hidden]):where(.custom-dialog,.custom-select) {
   --tw-space-y-reverse: 0;
@@ -647,42 +566,17 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1rem * var(--tw-space-y-reverse));
 }
-.custom-next .space-y-8 > :not([hidden]) ~ :not([hidden]) ,.custom-dialog .space-y-8 > :not([hidden]) ~ :not([hidden]), .custom-select .space-y-8 > :not([hidden]) ~ :not([hidden]), .space-y-8 > :not([hidden]) ~ :not([hidden]):where(.custom-dialog,.custom-select) {
-  --tw-space-y-reverse: 0;
-  margin-top: calc(2rem * calc(1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(2rem * var(--tw-space-y-reverse));
-}
-.custom-next .overflow-hidden ,.custom-dialog .overflow-hidden, .custom-select .overflow-hidden, .overflow-hidden:where(.custom-dialog,.custom-select) {
-  overflow: hidden;
-}
-.custom-next .truncate ,.custom-dialog .truncate, .custom-select .truncate, .truncate:where(.custom-dialog,.custom-select) {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 .custom-next .whitespace-nowrap ,.custom-dialog .whitespace-nowrap, .custom-select .whitespace-nowrap, .whitespace-nowrap:where(.custom-dialog,.custom-select) {
   white-space: nowrap;
 }
 .custom-next .rounded ,.custom-dialog .rounded, .custom-select .rounded, .rounded:where(.custom-dialog,.custom-select) {
   border-radius: 0.25rem;
 }
-.custom-next .rounded-full ,.custom-dialog .rounded-full, .custom-select .rounded-full, .rounded-full:where(.custom-dialog,.custom-select) {
-  border-radius: 9999px;
-}
-.custom-next .rounded-lg ,.custom-dialog .rounded-lg, .custom-select .rounded-lg, .rounded-lg:where(.custom-dialog,.custom-select) {
-  border-radius: var(--radius);
-}
 .custom-next .rounded-md ,.custom-dialog .rounded-md, .custom-select .rounded-md, .rounded-md:where(.custom-dialog,.custom-select) {
   border-radius: calc(var(--radius) - 2px);
 }
-.custom-next .rounded-xl ,.custom-dialog .rounded-xl, .custom-select .rounded-xl, .rounded-xl:where(.custom-dialog,.custom-select) {
-  border-radius: calc(var(--radius) + 4px);
-}
 .custom-next .border ,.custom-dialog .border, .custom-select .border, .border:where(.custom-dialog,.custom-select) {
   border-width: 1px;
-}
-.custom-next .border-b ,.custom-dialog .border-b, .custom-select .border-b, .border-b:where(.custom-dialog,.custom-select) {
-  border-bottom-width: 1px;
 }
 .custom-next .border-input ,.custom-dialog .border-input, .custom-select .border-input, .border-input:where(.custom-dialog,.custom-select) {
   border-color: hsl(var(--input));
@@ -690,36 +584,14 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 .custom-next .bg-background ,.custom-dialog .bg-background, .custom-select .bg-background, .bg-background:where(.custom-dialog,.custom-select) {
   background-color: hsl(var(--background));
 }
-.custom-next .bg-card ,.custom-dialog .bg-card, .custom-select .bg-card, .bg-card:where(.custom-dialog,.custom-select) {
-  background-color: hsl(var(--card));
-}
 .custom-next .bg-destructive ,.custom-dialog .bg-destructive, .custom-select .bg-destructive, .bg-destructive:where(.custom-dialog,.custom-select) {
   background-color: hsl(var(--destructive));
-}
-.custom-next .bg-muted ,.custom-dialog .bg-muted, .custom-select .bg-muted, .bg-muted:where(.custom-dialog,.custom-select) {
-  background-color: hsl(var(--muted));
 }
 .custom-next .bg-primary ,.custom-dialog .bg-primary, .custom-select .bg-primary, .bg-primary:where(.custom-dialog,.custom-select) {
   background-color: hsl(var(--primary));
 }
 .custom-next .bg-secondary ,.custom-dialog .bg-secondary, .custom-select .bg-secondary, .bg-secondary:where(.custom-dialog,.custom-select) {
   background-color: hsl(var(--secondary));
-}
-.custom-next .bg-transparent ,.custom-dialog .bg-transparent, .custom-select .bg-transparent, .bg-transparent:where(.custom-dialog,.custom-select) {
-  background-color: transparent;
-}
-.custom-next .object-cover ,.custom-dialog .object-cover, .custom-select .object-cover, .object-cover:where(.custom-dialog,.custom-select) {
-  -o-object-fit: cover;
-     object-fit: cover;
-}
-.custom-next .p-1 ,.custom-dialog .p-1, .custom-select .p-1, .p-1:where(.custom-dialog,.custom-select) {
-  padding: 0.25rem;
-}
-.custom-next .p-3 ,.custom-dialog .p-3, .custom-select .p-3, .p-3:where(.custom-dialog,.custom-select) {
-  padding: 0.75rem;
-}
-.custom-next .p-6 ,.custom-dialog .p-6, .custom-select .p-6, .p-6:where(.custom-dialog,.custom-select) {
-  padding: 1.5rem;
 }
 .custom-next .p-8 ,.custom-dialog .p-8, .custom-select .p-8, .p-8:where(.custom-dialog,.custom-select) {
   padding: 2rem;
@@ -740,10 +612,6 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   padding-left: 2rem;
   padding-right: 2rem;
 }
-.custom-next .py-1 ,.custom-dialog .py-1, .custom-select .py-1, .py-1:where(.custom-dialog,.custom-select) {
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-}
 .custom-next .py-2 ,.custom-dialog .py-2, .custom-select .py-2, .py-2:where(.custom-dialog,.custom-select) {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
@@ -753,9 +621,6 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 }
 .custom-next .pl-2 ,.custom-dialog .pl-2, .custom-select .pl-2, .pl-2:where(.custom-dialog,.custom-select) {
   padding-left: 0.5rem;
-}
-.custom-next .pt-0 ,.custom-dialog .pt-0, .custom-select .pt-0, .pt-0:where(.custom-dialog,.custom-select) {
-  padding-top: 0px;
 }
 .custom-next .pt-6 ,.custom-dialog .pt-6, .custom-select .pt-6, .pt-6:where(.custom-dialog,.custom-select) {
   padding-top: 1.5rem;
@@ -767,10 +632,6 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 .custom-next .text-3xl ,.custom-dialog .text-3xl, .custom-select .text-3xl, .text-3xl:where(.custom-dialog,.custom-select) {
   font-size: 1.875rem;
   line-height: 2.25rem;
-}
-.custom-next .text-5xl ,.custom-dialog .text-5xl, .custom-select .text-5xl, .text-5xl:where(.custom-dialog,.custom-select) {
-  font-size: 3rem;
-  line-height: 1;
 }
 .custom-next .text-sm ,.custom-dialog .text-sm, .custom-select .text-sm, .text-sm:where(.custom-dialog,.custom-select) {
   font-size: 0.875rem;
@@ -786,29 +647,14 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 .custom-next .font-medium ,.custom-dialog .font-medium, .custom-select .font-medium, .font-medium:where(.custom-dialog,.custom-select) {
   font-weight: 500;
 }
-.custom-next .font-normal ,.custom-dialog .font-normal, .custom-select .font-normal, .font-normal:where(.custom-dialog,.custom-select) {
-  font-weight: 400;
-}
-.custom-next .font-semibold ,.custom-dialog .font-semibold, .custom-select .font-semibold, .font-semibold:where(.custom-dialog,.custom-select) {
-  font-weight: 600;
-}
-.custom-next .leading-none ,.custom-dialog .leading-none, .custom-select .leading-none, .leading-none:where(.custom-dialog,.custom-select) {
-  line-height: 1;
+.custom-next .italic ,.custom-dialog .italic, .custom-select .italic, .italic:where(.custom-dialog,.custom-select) {
+  font-style: italic;
 }
 .custom-next .tracking-tight ,.custom-dialog .tracking-tight, .custom-select .tracking-tight, .tracking-tight:where(.custom-dialog,.custom-select) {
   letter-spacing: -0.025em;
 }
-.custom-next .text-card-foreground ,.custom-dialog .text-card-foreground, .custom-select .text-card-foreground, .text-card-foreground:where(.custom-dialog,.custom-select) {
-  color: hsl(var(--card-foreground));
-}
 .custom-next .text-destructive-foreground ,.custom-dialog .text-destructive-foreground, .custom-select .text-destructive-foreground, .text-destructive-foreground:where(.custom-dialog,.custom-select) {
   color: hsl(var(--destructive-foreground));
-}
-.custom-next .text-foreground ,.custom-dialog .text-foreground, .custom-select .text-foreground, .text-foreground:where(.custom-dialog,.custom-select) {
-  color: hsl(var(--foreground));
-}
-.custom-next .text-muted ,.custom-dialog .text-muted, .custom-select .text-muted, .text-muted:where(.custom-dialog,.custom-select) {
-  color: hsl(var(--muted));
 }
 .custom-next .text-muted-foreground ,.custom-dialog .text-muted-foreground, .custom-select .text-muted-foreground, .text-muted-foreground:where(.custom-dialog,.custom-select) {
   color: hsl(var(--muted-foreground));
@@ -838,14 +684,10 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 .custom-next .outline ,.custom-dialog .outline, .custom-select .outline, .outline:where(.custom-dialog,.custom-select) {
   outline-style: solid;
 }
-.custom-next .ring-offset-background ,.custom-dialog .ring-offset-background, .custom-select .ring-offset-background, .ring-offset-background:where(.custom-dialog,.custom-select) {
-  --tw-ring-offset-color: hsl(var(--background));
-}
-.custom-next .filter ,.custom-dialog .filter, .custom-select .filter, .filter:where(.custom-dialog,.custom-select) {
-  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
-}
-.custom-next .transition-all ,.custom-dialog .transition-all, .custom-select .transition-all, .transition-all:where(.custom-dialog,.custom-select) {
-  transition-property: all;
+.custom-next .transition ,.custom-dialog .transition, .custom-select .transition, .transition:where(.custom-dialog,.custom-select) {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
@@ -900,31 +742,6 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   --radius: 0.5rem;
 }
 
-.custom-next .file\:border-0::file-selector-button ,.custom-dialog .file\:border-0::file-selector-button, .custom-select .file\:border-0::file-selector-button, .file\:border-0::file-selector-button:where(.custom-dialog,.custom-select) {
-  border-width: 0px;
-}
-
-.custom-next .file\:bg-transparent::file-selector-button ,.custom-dialog .file\:bg-transparent::file-selector-button, .custom-select .file\:bg-transparent::file-selector-button, .file\:bg-transparent::file-selector-button:where(.custom-dialog,.custom-select) {
-  background-color: transparent;
-}
-
-.custom-next .file\:text-sm::file-selector-button ,.custom-dialog .file\:text-sm::file-selector-button, .custom-select .file\:text-sm::file-selector-button, .file\:text-sm::file-selector-button:where(.custom-dialog,.custom-select) {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-}
-
-.custom-next .file\:font-medium::file-selector-button ,.custom-dialog .file\:font-medium::file-selector-button, .custom-select .file\:font-medium::file-selector-button, .file\:font-medium::file-selector-button:where(.custom-dialog,.custom-select) {
-  font-weight: 500;
-}
-
-.custom-next .placeholder\:text-muted-foreground::-moz-placeholder, .custom-dialog .placeholder\:text-muted-foreground::-moz-placeholder, .custom-select .placeholder\:text-muted-foreground::-moz-placeholder, .placeholder\:text-muted-foreground::-moz-placeholder:where(.custom-dialog,.custom-select) {
-  color: hsl(var(--muted-foreground));
-}
-
-.custom-next .placeholder\:text-muted-foreground::placeholder ,.custom-dialog .placeholder\:text-muted-foreground::placeholder, .custom-select .placeholder\:text-muted-foreground::placeholder, .placeholder\:text-muted-foreground::placeholder:where(.custom-dialog,.custom-select) {
-  color: hsl(var(--muted-foreground));
-}
-
 .custom-next .hover\:bg-accent:hover ,.custom-dialog .hover\:bg-accent:hover, .custom-select .hover\:bg-accent:hover, .hover\:bg-accent:hover:where(.custom-dialog,.custom-select) {
   background-color: hsl(var(--accent));
 }
@@ -960,44 +777,16 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
 }
 
-.custom-next .focus-visible\:ring-2:focus-visible ,.custom-dialog .focus-visible\:ring-2:focus-visible, .custom-select .focus-visible\:ring-2:focus-visible, .focus-visible\:ring-2:focus-visible:where(.custom-dialog,.custom-select) {
-  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
-}
-
 .custom-next .focus-visible\:ring-ring:focus-visible ,.custom-dialog .focus-visible\:ring-ring:focus-visible, .custom-select .focus-visible\:ring-ring:focus-visible, .focus-visible\:ring-ring:focus-visible:where(.custom-dialog,.custom-select) {
   --tw-ring-color: hsl(var(--ring));
-}
-
-.custom-next .focus-visible\:ring-offset-2:focus-visible ,.custom-dialog .focus-visible\:ring-offset-2:focus-visible, .custom-select .focus-visible\:ring-offset-2:focus-visible, .focus-visible\:ring-offset-2:focus-visible:where(.custom-dialog,.custom-select) {
-  --tw-ring-offset-width: 2px;
 }
 
 .custom-next .disabled\:pointer-events-none:disabled ,.custom-dialog .disabled\:pointer-events-none:disabled, .custom-select .disabled\:pointer-events-none:disabled, .disabled\:pointer-events-none:disabled:where(.custom-dialog,.custom-select) {
   pointer-events: none;
 }
 
-.custom-next .disabled\:cursor-not-allowed:disabled ,.custom-dialog .disabled\:cursor-not-allowed:disabled, .custom-select .disabled\:cursor-not-allowed:disabled, .disabled\:cursor-not-allowed:disabled:where(.custom-dialog,.custom-select) {
-  cursor: not-allowed;
-}
-
 .custom-next .disabled\:opacity-50:disabled ,.custom-dialog .disabled\:opacity-50:disabled, .custom-select .disabled\:opacity-50:disabled, .disabled\:opacity-50:disabled:where(.custom-dialog,.custom-select) {
   opacity: 0.5;
-}
-
-.custom-next .data-\[state\=active\]\:bg-background[data-state="active"] ,.custom-dialog .data-\[state\=active\]\:bg-background[data-state="active"], .custom-select .data-\[state\=active\]\:bg-background[data-state="active"], .data-\[state\=active\]\:bg-background[data-state="active"]:where(.custom-dialog,.custom-select) {
-  background-color: hsl(var(--background));
-}
-
-.custom-next .data-\[state\=active\]\:text-foreground[data-state="active"] ,.custom-dialog .data-\[state\=active\]\:text-foreground[data-state="active"], .custom-select .data-\[state\=active\]\:text-foreground[data-state="active"], .data-\[state\=active\]\:text-foreground[data-state="active"]:where(.custom-dialog,.custom-select) {
-  color: hsl(var(--foreground));
-}
-
-.custom-next .data-\[state\=active\]\:shadow[data-state="active"] ,.custom-dialog .data-\[state\=active\]\:shadow[data-state="active"], .custom-select .data-\[state\=active\]\:shadow[data-state="active"], .data-\[state\=active\]\:shadow[data-state="active"]:where(.custom-dialog,.custom-select) {
-  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
 @container (min-width: 768px) {
@@ -1020,4 +809,145 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   .custom-next .lg\:grid-cols-7 ,.custom-dialog .lg\:grid-cols-7, .custom-select .lg\:grid-cols-7, .lg\:grid-cols-7:where(.custom-dialog,.custom-select) {
     grid-template-columns: repeat(7, minmax(0, 1fr));
   }
+}
+.custom-next .timer-container[data-v-78ceb09e],.custom-dialog .timer-container[data-v-78ceb09e], .custom-select .timer-container[data-v-78ceb09e], .timer-container[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    padding: 4px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+.custom-next .timer-header[data-v-78ceb09e],.custom-dialog .timer-header[data-v-78ceb09e], .custom-select .timer-header[data-v-78ceb09e], .timer-header[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.custom-next .timer-info[data-v-78ceb09e],.custom-dialog .timer-info[data-v-78ceb09e], .custom-select .timer-info[data-v-78ceb09e], .timer-info[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    transition: all 0.3s ease;
+}
+.custom-next .timer-title[data-v-78ceb09e],.custom-dialog .timer-title[data-v-78ceb09e], .custom-select .timer-title[data-v-78ceb09e], .timer-title[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-normal);
+    margin: 0;
+    transition: all 0.3s ease;
+}
+.custom-next .timer-title.active[data-v-78ceb09e],.custom-dialog .timer-title.active[data-v-78ceb09e], .custom-select .timer-title.active[data-v-78ceb09e], .timer-title.active[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    color: var(--interactive-accent);
+}
+.custom-next .timer-subtitle[data-v-78ceb09e],.custom-dialog .timer-subtitle[data-v-78ceb09e], .custom-select .timer-subtitle[data-v-78ceb09e], .timer-subtitle[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 2px 0 0 0;
+    transition: all 0.3s ease;
+}
+.custom-next .timer-subtitle.active[data-v-78ceb09e],.custom-dialog .timer-subtitle.active[data-v-78ceb09e], .custom-select .timer-subtitle.active[data-v-78ceb09e], .timer-subtitle.active[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    color: var(--interactive-accent);
+}
+.custom-next .timer-button[data-v-78ceb09e],.custom-dialog .timer-button[data-v-78ceb09e], .custom-select .timer-button[data-v-78ceb09e], .timer-button[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--interactive-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    outline: none;
+}
+.custom-next .timer-button[data-v-78ceb09e]:hover ,.custom-dialog .timer-button[data-v-78ceb09e]:hover, .custom-select .timer-button[data-v-78ceb09e]:hover, .timer-button[data-v-78ceb09e]:hover:where(.custom-dialog,.custom-select) {
+    background-color: var(--interactive-accent-hover);
+    transform: scale(1.05);
+}
+.custom-next .timer-button.active[data-v-78ceb09e],.custom-dialog .timer-button.active[data-v-78ceb09e], .custom-select .timer-button.active[data-v-78ceb09e], .timer-button.active[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    background-color: var(--text-error);
+}
+.custom-next .timer-icon[data-v-78ceb09e],.custom-dialog .timer-icon[data-v-78ceb09e], .custom-select .timer-icon[data-v-78ceb09e], .timer-icon[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    width: 20px;
+    height: 20px;
+    color: var(--text-on-accent);
+}
+.custom-next .timer-summary[data-v-78ceb09e],.custom-dialog .timer-summary[data-v-78ceb09e], .custom-select .timer-summary[data-v-78ceb09e], .timer-summary[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    background-color: var(--background-primary);
+    border-radius: 8px;
+    padding: 12px;
+}
+.custom-next .timer-summary-header[data-v-78ceb09e],.custom-dialog .timer-summary-header[data-v-78ceb09e], .custom-select .timer-summary-header[data-v-78ceb09e], .timer-summary-header[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+.custom-next .timer-summary-title[data-v-78ceb09e],.custom-dialog .timer-summary-title[data-v-78ceb09e], .custom-select .timer-summary-title[data-v-78ceb09e], .timer-summary-title[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-normal);
+    margin: 0;
+}
+.custom-next .timer-summary-total[data-v-78ceb09e],.custom-dialog .timer-summary-total[data-v-78ceb09e], .custom-select .timer-summary-total[data-v-78ceb09e], .timer-summary-total[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+.custom-next .timer-progress-bar[data-v-78ceb09e],.custom-dialog .timer-progress-bar[data-v-78ceb09e], .custom-select .timer-progress-bar[data-v-78ceb09e], .timer-progress-bar[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    height: 10px;
+    background-color: var(--background-secondary);
+    border-radius: 2px;
+    overflow: hidden;
+    display: flex;
+    margin-bottom: 12px;
+}
+.custom-next .timer-progress-segment[data-v-78ceb09e],.custom-dialog .timer-progress-segment[data-v-78ceb09e], .custom-select .timer-progress-segment[data-v-78ceb09e], .timer-progress-segment[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    height: 100%;
+    transition: width 0.3s ease;
+}
+.custom-next .timer-entries-list[data-v-78ceb09e],.custom-dialog .timer-entries-list[data-v-78ceb09e], .custom-select .timer-entries-list[data-v-78ceb09e], .timer-entries-list[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.custom-next .timer-entry[data-v-78ceb09e],.custom-dialog .timer-entry[data-v-78ceb09e], .custom-select .timer-entry[data-v-78ceb09e], .timer-entry[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.custom-next .timer-entry-info[data-v-78ceb09e],.custom-dialog .timer-entry-info[data-v-78ceb09e], .custom-select .timer-entry-info[data-v-78ceb09e], .timer-entry-info[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.custom-next .timer-entry-color[data-v-78ceb09e],.custom-dialog .timer-entry-color[data-v-78ceb09e], .custom-select .timer-entry-color[data-v-78ceb09e], .timer-entry-color[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.custom-next .timer-entry-title[data-v-78ceb09e],.custom-dialog .timer-entry-title[data-v-78ceb09e], .custom-select .timer-entry-title[data-v-78ceb09e], .timer-entry-title[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    font-size: 13px;
+    color: var(--text-normal);
+}
+.custom-next .timer-entry-tag[data-v-78ceb09e],.custom-dialog .timer-entry-tag[data-v-78ceb09e], .custom-select .timer-entry-tag[data-v-78ceb09e], .timer-entry-tag[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    font-size: 12px;
+    color: var(--text-muted);
+    background-color: var(--background-secondary);
+    padding: 1px 6px;
+    border-radius: 4px;
+}
+.custom-next .timer-entry-duration[data-v-78ceb09e],.custom-dialog .timer-entry-duration[data-v-78ceb09e], .custom-select .timer-entry-duration[data-v-78ceb09e], .timer-entry-duration[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+.custom-next .timer-no-entries[data-v-78ceb09e],.custom-dialog .timer-no-entries[data-v-78ceb09e], .custom-select .timer-no-entries[data-v-78ceb09e], .timer-no-entries[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-style: italic;
+}
+.custom-next .fade-enter-active[data-v-78ceb09e],.custom-dialog .fade-enter-active[data-v-78ceb09e], .custom-select .fade-enter-active[data-v-78ceb09e], .fade-enter-active[data-v-78ceb09e]:where(.custom-dialog,.custom-select),
+.custom-next .fade-leave-active[data-v-78ceb09e],.custom-dialog .fade-leave-active[data-v-78ceb09e], .custom-select .fade-leave-active[data-v-78ceb09e], .fade-leave-active[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    transition: opacity 0.3s ease;
+}
+.custom-next .fade-enter-from[data-v-78ceb09e],.custom-dialog .fade-enter-from[data-v-78ceb09e], .custom-select .fade-enter-from[data-v-78ceb09e], .fade-enter-from[data-v-78ceb09e]:where(.custom-dialog,.custom-select),
+.custom-next .fade-leave-to[data-v-78ceb09e],.custom-dialog .fade-leave-to[data-v-78ceb09e], .custom-select .fade-leave-to[data-v-78ceb09e], .fade-leave-to[data-v-78ceb09e]:where(.custom-dialog,.custom-select) {
+    opacity: 0;
 }
