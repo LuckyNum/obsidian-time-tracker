@@ -1,10 +1,10 @@
 {
-  "id": "shadcn-vue-template",
-  "name": "Shadcn Vue Template",
-  "description": "Obsidian + Shadcn + Vue + Vite",
+  "id": "obsidian-time-tracker",
+  "name": "Obsidian Time Tracker",
+  "description": "A plugin to track the time spent on your notes and tasks within Obsidian.",
   "version": "1.0.1",
   "author": "LuckyNum",
-  "authorUrl": "https://github.com/LuckyNum/",
+  "authorUrl": "https://github.com/LuckyNum/obsidian-time-tracker",
   "isDesktopOnly": false,
   "minAppVersion": "0.14.1"
 }

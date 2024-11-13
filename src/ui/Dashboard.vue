@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {Button} from "@/components/ui/button";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
 import {Card, CardHeader, CardContent, CardTitle, CardDescription} from "@/components/ui/card";
 import Overview from "@/components/Overview.vue";
