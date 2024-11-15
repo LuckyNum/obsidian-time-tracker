@@ -6,6 +6,7 @@ import {useTimerStore} from '@/store/TimerStore';
 import type {TimerService} from '@/obsidian/TimerService';
 import confetti from 'canvas-confetti';
 import {COLORS} from "@/types.ts";
+import {t} from '@/i18n/helpers.ts'
 
 const props = defineProps<{
     timerService: TimerService
@@ -29,7 +30,7 @@ const formatTotalTime = (seconds: number): string => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-    return `${hours.toString().padStart(2, '0')}时${minutes.toString().padStart(2, '0')}分${secs.toString().padStart(2, '0')}秒`;
+    return `${hours.toString().padStart(2, '0')}${t('hour')}${minutes.toString().padStart(2, '0')}${t('minute')}${secs.toString().padStart(2, '0')}${t('second')}`;
 };
 
 const formatEntryTime = (seconds: number): string => {
@@ -62,14 +63,14 @@ const toggleTimer = async () => {
         <div class="timer-header">
             <div class="timer-info">
                 <h2 class="timer-title">
-                    {{ activeEntry ? activeEntry.title : 'No active time entry' }}
+                    {{ activeEntry ? activeEntry.title : t('noActive') }}
                 </h2>
                 <p class="timer-subtitle" v-if="!activeEntry">
-                    Click to start new timer
+                    {{ t('start') }}
                 </p>
                 <p class="timer-subtitle" v-else>
                     <span class="timer-tag" :style="{ backgroundColor: getEntryColor(entries.length) }">
-                        {{ activeEntry.tag || 'No tag' }}
+                        {{ activeEntry.tag || t('noTag') }}
                     </span> ·
                     {{ formatActiveTime(activeEntry.duration) }}
                 </p>
@@ -86,7 +87,7 @@ const toggleTimer = async () => {
 
         <div class="timer-summary">
             <div class="timer-summary-header">
-                <h3 class="timer-summary-title">Today</h3>
+                <h3 class="timer-summary-title">{{ t('today') }}</h3>
                 <span class="timer-summary-total">{{ formatTotalTime(totalDuration) }}</span>
             </div>
 
@@ -120,7 +121,7 @@ const toggleTimer = async () => {
                 </div>
             </div>
             <div v-else class="timer-no-entries">
-                No entries for today
+                {{ t('noEntries') }}
             </div>
         </div>
     </div>
