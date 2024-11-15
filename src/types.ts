@@ -12,12 +12,14 @@ export interface TimerPluginSettings {
     dailyNotesFolder: string;
     timeEntryHeading: string;
     timeEntryPrefix: '-' | '- [ ]';
+    enableCelebration: boolean;
 }
 
 export const DEFAULT_SETTINGS: TimerPluginSettings = {
     dailyNotesFolder: 'Daily Notes',
     timeEntryHeading: '## Day planner',
-    timeEntryPrefix: '-'
+    timeEntryPrefix: '-',
+    enableCelebration: false
 };
 
 export const COLORS = [

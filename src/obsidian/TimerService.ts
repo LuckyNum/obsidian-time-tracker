@@ -1,22 +1,12 @@
-import {TFile, Modal, Setting} from 'obsidian';
-import type TimerPlugin from '@/index';
-import {COLORS, DEFAULT_SETTINGS, TimeEntry, TimerPluginSettings} from "@/types.ts";
+import {Plugin, TFile, Modal, Setting} from 'obsidian';
+import {COLORS, TimeEntry} from "@/types.ts";
+import {useTimerStore} from "@/store/TimerStore.ts";
 
 export class TimerService {
-    private settings: TimerPluginSettings;
-    private plugin: TimerPlugin;
+    plugin: Plugin;
 
-    constructor(plugin: TimerPlugin) {
+    constructor(plugin: Plugin) {
         this.plugin = plugin;
-        this.settings = DEFAULT_SETTINGS;
-    }
-
-    async loadSettings() {
-        this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.plugin.loadData());
-    }
-
-    async saveSettings() {
-        await this.plugin.saveData(this.settings);
     }
 
     async showNewEntryDialog(): Promise<{ title: string; tag: string } | null> {
@@ -88,24 +78,24 @@ export class TimerService {
 
     async addTimeEntryToDailyNote(entry: TimeEntry): Promise<void> {
         const fileName = window.moment(entry.startTime).format('YYYY-MM-DD');
-        const filePath = `${this.settings.dailyNotesFolder}/${fileName}.md`;
+        const filePath = `${useTimerStore().settings.dailyNotesFolder}/${fileName}.md`;
 
         let file = this.plugin.app.vault.getAbstractFileByPath(filePath) as TFile;
         if (!file) {
             file = await this.plugin.app.vault.create(
                 filePath,
-                `${this.settings.timeEntryHeading}\n`
+                `${useTimerStore().settings.timeEntryHeading}\n`
             );
         }
 
         const startTimeStr = window.moment(entry.startTime).format('HH:mm');
         const endTimeStr = window.moment(entry.endTime).format('HH:mm');
         const tagStr = entry.tag ? ` #${entry.tag}` : '';
-        const newEntryText = `${this.settings.timeEntryPrefix} ${startTimeStr} - ${endTimeStr} ${entry.title}${tagStr}`;
+        const newEntryText = `${useTimerStore().settings.timeEntryPrefix} ${startTimeStr} - ${endTimeStr} ${entry.title}${tagStr}`;
 
         const content = await this.plugin.app.vault.cachedRead(file);
         const lines = content.split('\n');
-        const headingIndex = lines.findIndex(line => line.trim() === this.settings.timeEntryHeading);
+        const headingIndex = lines.findIndex(line => line.trim() === useTimerStore().settings.timeEntryHeading);
 
         if (headingIndex !== -1) {
             let insertIndex = headingIndex + 1;
@@ -114,10 +104,9 @@ export class TimerService {
             }
             lines.splice(insertIndex, 0, newEntryText);
         } else {
-            lines.push(this.settings.timeEntryHeading, newEntryText);
+            lines.push(useTimerStore().settings.timeEntryHeading, newEntryText);
         }
-        console.log(file)
-        await this.plugin.app.vault.modify(file, lines.join('\n'));
+        await this.plugin.app.vault.adapter.write(filePath, lines.join('\n'));
     }
 
     async getTodayEntries(): Promise<TimeEntry[]> {
@@ -133,12 +122,12 @@ export class TimerService {
         let isInTimeEntrySection = false;
 
         for (const line of lines) {
-            if (line.trim() === this.settings.timeEntryHeading) {
+            if (line.trim() === useTimerStore().settings.timeEntryHeading) {
                 isInTimeEntrySection = true;
                 continue;
             }
 
-            if (isInTimeEntrySection && line.startsWith(this.settings.timeEntryPrefix)) {
+            if (isInTimeEntrySection && line.startsWith(useTimerStore().settings.timeEntryPrefix)) {
                 const match = line.match(/(\d{2}:\d{2}) - (\d{2}:\d{2}) (.*?)( #(\S+))?$/);
                 if (match) {
                     const [, startTime, endTime, title, , tag] = match;
@@ -155,15 +144,15 @@ export class TimerService {
                 }
             }
         }
-        console.log(entries)
         return entries;
     }
 
     getTodayNote(): string {
-        return `${this.settings.dailyNotesFolder}/${window.moment().format('YYYY-MM-DD')}.md`;
+        return `${useTimerStore().settings.dailyNotesFolder}/${window.moment().format('YYYY-MM-DD')}.md`;
     }
 
     private getTags(): string[] {
+        // @ts-ignore
         const tags = this.plugin.app.metadataCache.getTags();
         return Object.keys(tags).map(tag => tag.slice(1));
     }

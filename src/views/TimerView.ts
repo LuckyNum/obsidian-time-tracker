@@ -1,17 +1,30 @@
 import {IconName, ItemView, WorkspaceLeaf, Plugin} from 'obsidian';
-import {createApp, App as VueApp} from 'vue';
-import TimerComponent from '@/views/TimerView.vue';
+import {createApp, App} from 'vue';
+import TimerComponent from '@/views/TimerComponent.vue';
 import {createPinia} from "pinia";
+import {TimerService} from "@/obsidian/TimerService.ts";
+import {useTimerStore} from "@/store/TimerStore.ts";
 
 export const VIEW_TYPE_TIMER = 'timer-view';
 
 export class TimerView extends ItemView {
-    private vueApp: VueApp | null = null;
-    private readonly plugin: Plugin;
+    vueApp: App;
+    plugin: Plugin;
+    timerService: TimerService;
 
     constructor(leaf: WorkspaceLeaf, plugin: Plugin) {
         super(leaf);
         this.plugin = plugin;
+        this.timerService = new TimerService(plugin);
+
+        this.vueApp = createApp(TimerComponent, {
+            timerService: this.timerService
+        });
+
+        const pinia = createPinia();
+        this.vueApp.use(pinia);
+        const timerStore = useTimerStore(pinia);
+        timerStore.init(this.timerService, this.plugin);
     }
 
     getViewType(): string {
@@ -28,20 +41,23 @@ export class TimerView extends ItemView {
 
     async onOpen(): Promise<void> {
         this.contentEl.toggleClass('custom-next', true);
-
-        this.vueApp = createApp(TimerComponent, {
-            obsidianService: this.plugin.,
-        });
-
-        const pinia = createPinia();
-        this.vueApp.use(pinia);
         this.vueApp.mount(this.contentEl);
+        this.registerTimerEvent();
     }
 
     async onClose(): Promise<void> {
         if (this.vueApp) {
             this.vueApp.unmount();
-            this.vueApp = null;
         }
+    }
+
+    private registerTimerEvent() {
+        // 监听文件修改事件
+        this.registerEvent(
+            this.app.vault.on('modify', async (): Promise<void> => {
+                const entries = await this.timerService.getTodayEntries();
+                useTimerStore().setEntries(entries);
+            })
+        );
     }
 }
