@@ -41,7 +41,7 @@ This project is licensed under the [MIT License](LICENSE).
 If you have any questions or need assistance, feel free to reach out:
 
 - Create an issue on [GitHub](https://github.com/LuckyNum/obsidian-time-tracker/issues)
-- Email: youremail@example.com
+- Email: lxx_main@163.com
 
 ## Acknowledgements
 
