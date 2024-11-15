@@ -10,4 +10,5 @@ export default {
   hour: 'Hour',
   minute: 'Minute',
   second: 'Second',
+  cantAdd: 'Cannot record less than 60 seconds'
 };

@@ -1,4 +1,4 @@
-import {Plugin, TFile, Modal, Setting} from 'obsidian';
+import {Plugin, TFile, Modal, Setting, Notice} from 'obsidian';
 import {COLORS, TimeEntry} from "@/types.ts";
 import {useTimerStore} from "@/store/TimerStore.ts";
 
@@ -149,6 +149,10 @@ export class TimerService {
 
     getTodayNote(): string {
         return `${useTimerStore().settings.dailyNotesFolder}/${window.moment().format('YYYY-MM-DD')}.md`;
+    }
+
+    notice(message: string) {
+        new Notice(message);
     }
 
     private getTags(): string[] {

@@ -2,6 +2,7 @@ import {defineStore} from 'pinia';
 import {COLORS, DEFAULT_SETTINGS, TimeEntry, TimerPluginSettings} from "@/types.ts";
 import type {TimerService} from '@/obsidian/TimerService.ts';
 import {Plugin} from 'obsidian'
+import {t} from "@/i18n/helpers.ts";
 
 export const useTimerStore = defineStore('timerStore', {
     state: () => ({
@@ -51,14 +52,18 @@ export const useTimerStore = defineStore('timerStore', {
                     duration,
                     color: '',
                 };
-                await this.timerService?.addTimeEntryToDailyNote(newEntry);
+                if (duration < 60) {
+                    this.timerService?.notice(t('cantAdd'));
+                } else {
+                    await this.timerService?.addTimeEntryToDailyNote(newEntry);
+                }
                 this.activeEntry = null;
                 await this.refreshToday();
             }
         },
         updateActiveDuration() {
             if (this.activeEntry) {
-                this.activeEntry.duration = Math.floor((Date.now() - this.activeEntry.startTime) / 100);
+                this.activeEntry.duration = Math.floor((Date.now() - this.activeEntry.startTime) / 1000);
                 setTimeout(() => this.updateActiveDuration(), 1000);
             }
         },

@@ -10,4 +10,5 @@ export default {
     hour: '小时',
     minute: '分钟',
     second: '秒',
+    cantAdd: '小于60秒无法记录'
 };
