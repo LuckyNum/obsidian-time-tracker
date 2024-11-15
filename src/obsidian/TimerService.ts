@@ -99,14 +99,16 @@ export class TimerService {
 
         if (headingIndex !== -1) {
             let insertIndex = headingIndex + 1;
-            while (insertIndex < lines.length && lines[insertIndex].trim() !== '') {
+            while (insertIndex < lines.length &&
+            lines[insertIndex].startsWith(useTimerStore().settings.timeEntryPrefix)) {
                 insertIndex++;
             }
             lines.splice(insertIndex, 0, newEntryText);
         } else {
-            lines.push(useTimerStore().settings.timeEntryHeading, newEntryText);
+            lines.push('', useTimerStore().settings.timeEntryHeading, newEntryText);
         }
-        await this.plugin.app.vault.adapter.write(filePath, lines.join('\n'));
+
+        await this.plugin.app.vault.modify(file, lines.join('\n'));
     }
 
     async getTodayEntries(): Promise<TimeEntry[]> {

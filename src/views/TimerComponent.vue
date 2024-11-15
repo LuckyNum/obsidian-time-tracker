@@ -46,7 +46,7 @@ const toggleTimer = async () => {
             confetti({
                 particleCount: 100,
                 spread: 70,
-                origin: {y: 0.6}
+                origin: {y: 1}
             });
         }
     } else {
@@ -114,7 +114,7 @@ const toggleTimer = async () => {
                             class="timer-entry-color"
                             :style="{ backgroundColor: getEntryColor(index) }"
                         ></div>
-                        <span class="timer-entry-title">{{ entry.title }}</span>
+                        <span class="timer-entry-title" :style="{color: getEntryColor(index)}">{{ entry.title }}</span>
                         <span v-if="entry.tag" class="timer-entry-tag">{{ entry.tag }}</span>
                     </div>
                     <span class="timer-entry-duration">{{ formatEntryTime(entry.duration) }}</span>
@@ -251,6 +251,7 @@ const toggleTimer = async () => {
 .timer-entry-info {
     display: flex;
     align-items: center;
+    gap: 10px;
 }
 
 .timer-entry-color {

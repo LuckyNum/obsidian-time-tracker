@@ -561,28 +561,28 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   --chart-5: 340 75% 55%;
   --radius: 0.5rem;
 }
-.custom-next .timer-container[data-v-4f4929ae],.custom-dialog .timer-container[data-v-4f4929ae], .custom-select .timer-container[data-v-4f4929ae], .timer-container[data-v-4f4929ae]:where(.custom-dialog,.custom-select) {
+.custom-next .timer-container[data-v-360e3189],.custom-dialog .timer-container[data-v-360e3189], .custom-select .timer-container[data-v-360e3189], .timer-container[data-v-360e3189]:where(.custom-dialog,.custom-select) {
     padding: 16px;
     background-color: transparent;
     position: relative;
     overflow: hidden;
 }
-.custom-next .timer-header[data-v-4f4929ae],.custom-dialog .timer-header[data-v-4f4929ae], .custom-select .timer-header[data-v-4f4929ae], .timer-header[data-v-4f4929ae]:where(.custom-dialog,.custom-select) {
+.custom-next .timer-header[data-v-360e3189],.custom-dialog .timer-header[data-v-360e3189], .custom-select .timer-header[data-v-360e3189], .timer-header[data-v-360e3189]:where(.custom-dialog,.custom-select) {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
-.custom-next .timer-info[data-v-4f4929ae],.custom-dialog .timer-info[data-v-4f4929ae], .custom-select .timer-info[data-v-4f4929ae], .timer-info[data-v-4f4929ae]:where(.custom-dialog,.custom-select) {
+.custom-next .timer-info[data-v-360e3189],.custom-dialog .timer-info[data-v-360e3189], .custom-select .timer-info[data-v-360e3189], .timer-info[data-v-360e3189]:where(.custom-dialog,.custom-select) {
     flex-grow: 1;
 }
-.custom-next .timer-title[data-v-4f4929ae],.custom-dialog .timer-title[data-v-4f4929ae], .custom-select .timer-title[data-v-4f4929ae], .timer-title[data-v-4f4929ae]:where(.custom-dialog,.custom-select) {
+.custom-next .timer-title[data-v-360e3189],.custom-dialog .timer-title[data-v-360e3189], .custom-select .timer-title[data-v-360e3189], .timer-title[data-v-360e3189]:where(.custom-dialog,.custom-select) {
     font-size: 18px;
     font-weight: 600;
     color: var(--text-normal);
     margin: 0;
 }
-.custom-next .timer-subtitle[data-v-4f4929ae],.custom-dialog .timer-subtitle[data-v-4f4929ae], .custom-select .timer-subtitle[data-v-4f4929ae], .timer-subtitle[data-v-4f4929ae]:where(.custom-dialog,.custom-select) {
+.custom-next .timer-subtitle[data-v-360e3189],.custom-dialog .timer-subtitle[data-v-360e3189], .custom-select .timer-subtitle[data-v-360e3189], .timer-subtitle[data-v-360e3189]:where(.custom-dialog,.custom-select) {
     font-size: 14px;
     color: var(--text-muted);
     margin: 4px 0 0 0;
@@ -590,7 +590,7 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
     align-items: center;
     gap: 8px;
 }
-.custom-next .timer-tag[data-v-4f4929ae],.custom-dialog .timer-tag[data-v-4f4929ae], .custom-select .timer-tag[data-v-4f4929ae], .timer-tag[data-v-4f4929ae]:where(.custom-dialog,.custom-select) {
+.custom-next .timer-tag[data-v-360e3189],.custom-dialog .timer-tag[data-v-360e3189], .custom-select .timer-tag[data-v-360e3189], .timer-tag[data-v-360e3189]:where(.custom-dialog,.custom-select) {
     color: var(--text-on-accent);
     background-color: var(--interactive-accent);
     padding: 2px 6px;
@@ -600,10 +600,10 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
     opacity: 0.9;
     transition: opacity 0.2s ease;
 }
-.custom-next .timer-tag[data-v-4f4929ae]:hover ,.custom-dialog .timer-tag[data-v-4f4929ae]:hover, .custom-select .timer-tag[data-v-4f4929ae]:hover, .timer-tag[data-v-4f4929ae]:hover:where(.custom-dialog,.custom-select) {
+.custom-next .timer-tag[data-v-360e3189]:hover ,.custom-dialog .timer-tag[data-v-360e3189]:hover, .custom-select .timer-tag[data-v-360e3189]:hover, .timer-tag[data-v-360e3189]:hover:where(.custom-dialog,.custom-select) {
     opacity: 1;
 }
-.custom-next .timer-button[data-v-4f4929ae],.custom-dialog .timer-button[data-v-4f4929ae], .custom-select .timer-button[data-v-4f4929ae], .timer-button[data-v-4f4929ae]:where(.custom-dialog,.custom-select) {
+.custom-next .timer-button[data-v-360e3189],.custom-dialog .timer-button[data-v-360e3189], .custom-select .timer-button[data-v-360e3189], .timer-button[data-v-360e3189]:where(.custom-dialog,.custom-select) {
     width: 48px;
     height: 48px;
     border-radius: 50%;
@@ -616,32 +616,32 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
     outline: none;
     transition: background-color 0.3s ease;
 }
-.custom-next .timer-button[data-v-4f4929ae]:hover ,.custom-dialog .timer-button[data-v-4f4929ae]:hover, .custom-select .timer-button[data-v-4f4929ae]:hover, .timer-button[data-v-4f4929ae]:hover:where(.custom-dialog,.custom-select) {
+.custom-next .timer-button[data-v-360e3189]:hover ,.custom-dialog .timer-button[data-v-360e3189]:hover, .custom-select .timer-button[data-v-360e3189]:hover, .timer-button[data-v-360e3189]:hover:where(.custom-dialog,.custom-select) {
     background-color: var(--interactive-accent-hover);
 }
-.custom-next .timer-icon[data-v-4f4929ae],.custom-dialog .timer-icon[data-v-4f4929ae], .custom-select .timer-icon[data-v-4f4929ae], .timer-icon[data-v-4f4929ae]:where(.custom-dialog,.custom-select) {
+.custom-next .timer-icon[data-v-360e3189],.custom-dialog .timer-icon[data-v-360e3189], .custom-select .timer-icon[data-v-360e3189], .timer-icon[data-v-360e3189]:where(.custom-dialog,.custom-select) {
     width: 24px;
     height: 24px;
     color: var(--text-on-accent);
 }
-.custom-next .timer-summary-header[data-v-4f4929ae],.custom-dialog .timer-summary-header[data-v-4f4929ae], .custom-select .timer-summary-header[data-v-4f4929ae], .timer-summary-header[data-v-4f4929ae]:where(.custom-dialog,.custom-select) {
+.custom-next .timer-summary-header[data-v-360e3189],.custom-dialog .timer-summary-header[data-v-360e3189], .custom-select .timer-summary-header[data-v-360e3189], .timer-summary-header[data-v-360e3189]:where(.custom-dialog,.custom-select) {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 12px;
 }
-.custom-next .timer-summary-title[data-v-4f4929ae],.custom-dialog .timer-summary-title[data-v-4f4929ae], .custom-select .timer-summary-title[data-v-4f4929ae], .timer-summary-title[data-v-4f4929ae]:where(.custom-dialog,.custom-select) {
+.custom-next .timer-summary-title[data-v-360e3189],.custom-dialog .timer-summary-title[data-v-360e3189], .custom-select .timer-summary-title[data-v-360e3189], .timer-summary-title[data-v-360e3189]:where(.custom-dialog,.custom-select) {
     font-size: 20px;
     font-weight: 600;
     color: var(--text-normal);
     margin: 0;
 }
-.custom-next .timer-summary-total[data-v-4f4929ae],.custom-dialog .timer-summary-total[data-v-4f4929ae], .custom-select .timer-summary-total[data-v-4f4929ae], .timer-summary-total[data-v-4f4929ae]:where(.custom-dialog,.custom-select) {
+.custom-next .timer-summary-total[data-v-360e3189],.custom-dialog .timer-summary-total[data-v-360e3189], .custom-select .timer-summary-total[data-v-360e3189], .timer-summary-total[data-v-360e3189]:where(.custom-dialog,.custom-select) {
     font-size: 16px;
     font-weight: 600;
     color: var(--text-normal);
 }
-.custom-next .timer-progress-bar[data-v-4f4929ae],.custom-dialog .timer-progress-bar[data-v-4f4929ae], .custom-select .timer-progress-bar[data-v-4f4929ae], .timer-progress-bar[data-v-4f4929ae]:where(.custom-dialog,.custom-select) {
+.custom-next .timer-progress-bar[data-v-360e3189],.custom-dialog .timer-progress-bar[data-v-360e3189], .custom-select .timer-progress-bar[data-v-360e3189], .timer-progress-bar[data-v-360e3189]:where(.custom-dialog,.custom-select) {
     height: 20px;
     border-radius: 4px;
     overflow: hidden;
@@ -649,36 +649,37 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
     margin-bottom: 16px;
     background-color: var(--background-secondary);
 }
-.custom-next .timer-progress-segment[data-v-4f4929ae],.custom-dialog .timer-progress-segment[data-v-4f4929ae], .custom-select .timer-progress-segment[data-v-4f4929ae], .timer-progress-segment[data-v-4f4929ae]:where(.custom-dialog,.custom-select) {
+.custom-next .timer-progress-segment[data-v-360e3189],.custom-dialog .timer-progress-segment[data-v-360e3189], .custom-select .timer-progress-segment[data-v-360e3189], .timer-progress-segment[data-v-360e3189]:where(.custom-dialog,.custom-select) {
     height: 100%;
     transition: width 0.3s ease;
 }
-.custom-next .timer-entries-list[data-v-4f4929ae],.custom-dialog .timer-entries-list[data-v-4f4929ae], .custom-select .timer-entries-list[data-v-4f4929ae], .timer-entries-list[data-v-4f4929ae]:where(.custom-dialog,.custom-select) {
+.custom-next .timer-entries-list[data-v-360e3189],.custom-dialog .timer-entries-list[data-v-360e3189], .custom-select .timer-entries-list[data-v-360e3189], .timer-entries-list[data-v-360e3189]:where(.custom-dialog,.custom-select) {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
-.custom-next .timer-entry[data-v-4f4929ae],.custom-dialog .timer-entry[data-v-4f4929ae], .custom-select .timer-entry[data-v-4f4929ae], .timer-entry[data-v-4f4929ae]:where(.custom-dialog,.custom-select) {
+.custom-next .timer-entry[data-v-360e3189],.custom-dialog .timer-entry[data-v-360e3189], .custom-select .timer-entry[data-v-360e3189], .timer-entry[data-v-360e3189]:where(.custom-dialog,.custom-select) {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 2px;
 }
-.custom-next .timer-entry-info[data-v-4f4929ae],.custom-dialog .timer-entry-info[data-v-4f4929ae], .custom-select .timer-entry-info[data-v-4f4929ae], .timer-entry-info[data-v-4f4929ae]:where(.custom-dialog,.custom-select) {
+.custom-next .timer-entry-info[data-v-360e3189],.custom-dialog .timer-entry-info[data-v-360e3189], .custom-select .timer-entry-info[data-v-360e3189], .timer-entry-info[data-v-360e3189]:where(.custom-dialog,.custom-select) {
     display: flex;
     align-items: center;
+    gap: 10px;
 }
-.custom-next .timer-entry-color[data-v-4f4929ae],.custom-dialog .timer-entry-color[data-v-4f4929ae], .custom-select .timer-entry-color[data-v-4f4929ae], .timer-entry-color[data-v-4f4929ae]:where(.custom-dialog,.custom-select) {
+.custom-next .timer-entry-color[data-v-360e3189],.custom-dialog .timer-entry-color[data-v-360e3189], .custom-select .timer-entry-color[data-v-360e3189], .timer-entry-color[data-v-360e3189]:where(.custom-dialog,.custom-select) {
     width: 10px;
     height: 10px;
     border-radius: 50%;
     flex-shrink: 0;
 }
-.custom-next .timer-entry-title[data-v-4f4929ae],.custom-dialog .timer-entry-title[data-v-4f4929ae], .custom-select .timer-entry-title[data-v-4f4929ae], .timer-entry-title[data-v-4f4929ae]:where(.custom-dialog,.custom-select) {
+.custom-next .timer-entry-title[data-v-360e3189],.custom-dialog .timer-entry-title[data-v-360e3189], .custom-select .timer-entry-title[data-v-360e3189], .timer-entry-title[data-v-360e3189]:where(.custom-dialog,.custom-select) {
     font-size: 14px;
     color: var(--text-normal);
 }
-.custom-next .timer-entry-tag[data-v-4f4929ae],.custom-dialog .timer-entry-tag[data-v-4f4929ae], .custom-select .timer-entry-tag[data-v-4f4929ae], .timer-entry-tag[data-v-4f4929ae]:where(.custom-dialog,.custom-select) {
+.custom-next .timer-entry-tag[data-v-360e3189],.custom-dialog .timer-entry-tag[data-v-360e3189], .custom-select .timer-entry-tag[data-v-360e3189], .timer-entry-tag[data-v-360e3189]:where(.custom-dialog,.custom-select) {
     font-size: 11px;
     color: var(--text-muted);
     background-color: var(--background-modifier-border);
@@ -687,14 +688,14 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
     opacity: 0.8;
     transition: opacity 0.2s ease;
 }
-.custom-next .timer-entry-tag[data-v-4f4929ae]:hover ,.custom-dialog .timer-entry-tag[data-v-4f4929ae]:hover, .custom-select .timer-entry-tag[data-v-4f4929ae]:hover, .timer-entry-tag[data-v-4f4929ae]:hover:where(.custom-dialog,.custom-select) {
+.custom-next .timer-entry-tag[data-v-360e3189]:hover ,.custom-dialog .timer-entry-tag[data-v-360e3189]:hover, .custom-select .timer-entry-tag[data-v-360e3189]:hover, .timer-entry-tag[data-v-360e3189]:hover:where(.custom-dialog,.custom-select) {
     opacity: 1;
 }
-.custom-next .timer-entry-duration[data-v-4f4929ae],.custom-dialog .timer-entry-duration[data-v-4f4929ae], .custom-select .timer-entry-duration[data-v-4f4929ae], .timer-entry-duration[data-v-4f4929ae]:where(.custom-dialog,.custom-select) {
+.custom-next .timer-entry-duration[data-v-360e3189],.custom-dialog .timer-entry-duration[data-v-360e3189], .custom-select .timer-entry-duration[data-v-360e3189], .timer-entry-duration[data-v-360e3189]:where(.custom-dialog,.custom-select) {
     font-size: 14px;
     color: var(--text-muted);
 }
-.custom-next .timer-no-entries[data-v-4f4929ae],.custom-dialog .timer-no-entries[data-v-4f4929ae], .custom-select .timer-no-entries[data-v-4f4929ae], .timer-no-entries[data-v-4f4929ae]:where(.custom-dialog,.custom-select) {
+.custom-next .timer-no-entries[data-v-360e3189],.custom-dialog .timer-no-entries[data-v-360e3189], .custom-select .timer-no-entries[data-v-360e3189], .timer-no-entries[data-v-360e3189]:where(.custom-dialog,.custom-select) {
     text-align: center;
     color: var(--text-muted);
     font-size: 14px;

@@ -1,5 +1,6 @@
 import {PluginSettingTab, Setting, Plugin} from 'obsidian';
 import {useTimerStore} from "@/store/TimerStore.ts";
+import {t} from "@/i18n/helpers.ts";
 
 
 export class TimerSettingTab extends PluginSettingTab {
@@ -16,11 +17,11 @@ export class TimerSettingTab extends PluginSettingTab {
 
         containerEl.empty();
 
-        containerEl.createEl('h2', {text: 'Timer Plugin Settings'});
+        containerEl.createEl('h2', {text: t('settingHeader')});
 
         new Setting(containerEl)
-            .setName('Daily Notes Folder')
-            .setDesc('The folder where your daily notes are stored')
+            .setName(t('settingDailyNoteFolder'))
+            .setDesc(t('settingDailyNoteFolderDesc'))
             .addText(text => text
                 .setPlaceholder('Daily Notes')
                 .setValue(timerStore.settings.dailyNotesFolder)
@@ -30,8 +31,8 @@ export class TimerSettingTab extends PluginSettingTab {
                 }));
 
         new Setting(containerEl)
-            .setName('Time Entry Heading')
-            .setDesc('The heading under which time entries will be added')
+            .setName(t('settingDailyNoteHeading'))
+            .setDesc(t('settingDailyNoteHeadingDesc'))
             .addText(text => text
                 .setPlaceholder('## Day planner')
                 .setValue(timerStore.settings.timeEntryHeading)
@@ -41,8 +42,8 @@ export class TimerSettingTab extends PluginSettingTab {
                 }));
 
         new Setting(containerEl)
-            .setName('Time Entry Prefix')
-            .setDesc('The prefix for each time entry')
+            .setName(t('settingPrefix'))
+            .setDesc(t('settingPrefixDesc'))
             .addDropdown(dropdown => dropdown
                 .addOption('-', 'List mode (-)')
                 .addOption('- [ ]', 'Todo mode (- [ ])')
@@ -55,8 +56,8 @@ export class TimerSettingTab extends PluginSettingTab {
                 }));
 
         new Setting(containerEl)
-            .setName('Enable Celebration')
-            .setDesc('Show confetti animation when completing a task')
+            .setName(t('settingEnableCelebration'))
+            .setDesc(t('settingEnableCelebrationDesc'))
             .addToggle(toggle => toggle
                 .setValue(timerStore.settings.enableCelebration)
                 .onChange(async (value) => {
