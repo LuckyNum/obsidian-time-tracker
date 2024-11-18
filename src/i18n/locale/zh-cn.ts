@@ -11,7 +11,7 @@ export default {
     minute: '分',
     second: '秒',
     cantAdd: '小于60秒无法记录',
-    settingHeader: '计时插件设置',
+    settingHeader: 'Time Tracker 插件设置',
     settingDailyNoteFolder: '日记文件夹',
     settingDailyNoteFolderDesc: '存储您日常笔记的文件夹',
     settingDailyNoteHeading: '插入标题',

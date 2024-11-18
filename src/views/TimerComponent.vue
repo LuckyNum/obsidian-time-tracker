@@ -240,20 +240,26 @@ const toggleTimer = async () => {
 .timer-entries-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
 }
 
 .timer-entry {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 2px;
+    padding: 8px;
+    border-radius: 4px;
+    background-color: var(--background-secondary);
+    transition: background-color 0.2s ease;
+    overflow: hidden; /* Ensure no content spills out */
 }
 
 .timer-entry-info {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
+    flex: 1;
+    min-width: 0; /* Allow flex item to shrink below its content size */
+    white-space: nowrap; /* Prevent wrapping */
 }
 
 .timer-entry-color {
@@ -266,6 +272,11 @@ const toggleTimer = async () => {
 .timer-entry-title {
     font-size: 14px;
     color: var(--text-normal);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0; /* Allow text to be truncated */
 }
 
 .timer-entry-tag {
@@ -276,15 +287,14 @@ const toggleTimer = async () => {
     border-radius: 10px;
     opacity: 0.8;
     transition: opacity 0.2s ease;
-}
-
-.timer-entry-tag:hover {
-    opacity: 1;
+    flex-shrink: 0; /* Prevent tag from shrinking */
 }
 
 .timer-entry-duration {
     font-size: 14px;
     color: var(--text-muted);
+    margin-left: 8px; /* Add some space between the title/tag and duration */
+    flex-shrink: 0; /* Prevent duration from shrinking */
 }
 
 .timer-no-entries {
