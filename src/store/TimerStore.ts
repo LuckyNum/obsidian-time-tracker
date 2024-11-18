@@ -54,12 +54,18 @@ export const useTimerStore = defineStore('timerStore', {
                 };
                 if (duration < 60) {
                     this.timerService?.notice(t('cantAdd'));
+                    this.activeEntry = null;
+                    await this.refreshToday();
                 } else {
-                    await this.timerService?.addTimeEntryToDailyNote(newEntry);
+                    const created = await this.timerService?.addTimeEntryToDailyNote(newEntry);
+                    this.activeEntry = null;
+                    await this.refreshToday();
+                    if (created) {
+                        return true;
+                    }
                 }
-                this.activeEntry = null;
-                await this.refreshToday();
             }
+            return false;
         },
         updateActiveDuration() {
             if (this.activeEntry) {

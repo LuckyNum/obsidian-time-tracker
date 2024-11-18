@@ -5,7 +5,7 @@ export default {
     noActive: 'Hi，要做点什么？',
     start: '点击开始',
     noTag: '无标签',
-    today: '今天',
+    today: '今日',
     noEntries: '今天没有条目',
     hour: '时',
     minute: '分',
@@ -19,5 +19,8 @@ export default {
     settingPrefix: '插入风格',
     settingPrefixDesc: '插入记录的风格：列表/待办',
     settingEnableCelebration: '启用庆祝',
-    settingEnableCelebrationDesc: '完成任务时显示彩屑动画'
+    settingEnableCelebrationDesc: '完成任务时显示彩屑动画',
+    settingEnableCreateNoteFirst: '自动创建日记文件',
+    settingEnableCreateNoteFirstDesc: '开启后，如果不存在日记文件则自动创建',
+    createNoteFirst: '请先创建日记'
 };

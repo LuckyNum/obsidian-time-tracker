@@ -64,5 +64,15 @@ export class TimerSettingTab extends PluginSettingTab {
                     timerStore.settings.enableCelebration = value;
                     await this.plugin.saveData(timerStore.settings);
                 }));
+
+        new Setting(containerEl)
+            .setName(t('settingEnableCreateNoteFirst'))
+            .setDesc(t('settingEnableCreateNoteFirstDesc'))
+            .addToggle(toggle => toggle
+                .setValue(timerStore.settings.enableCreateNote)
+                .onChange(async (value) => {
+                    timerStore.settings.enableCreateNote = value;
+                    await this.plugin.saveData(timerStore.settings);
+                }));
     }
 }

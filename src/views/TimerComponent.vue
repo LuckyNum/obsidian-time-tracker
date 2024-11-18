@@ -41,13 +41,15 @@ const formatEntryTime = (seconds: number): string => {
 
 const toggleTimer = async () => {
     if (activeEntry.value) {
-        await timerStore.stopTimer();
-        if (settings.value.enableCelebration) {
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: {y: 1}
-            });
+        const created = await timerStore.stopTimer();
+        if (created) {
+            if (settings.value.enableCelebration) {
+                confetti({
+                    particleCount: 100,
+                    spread: 80,
+                    origin: {y: 0.8}
+                });
+            }
         }
     } else {
         const result = await props.timerService.showNewEntryDialog();
@@ -129,7 +131,7 @@ const toggleTimer = async () => {
 
 <style scoped>
 .timer-container {
-    padding: 16px;
+    padding: 16px 16px 0px 16px;
     background-color: transparent;
     position: relative;
     overflow: hidden;
@@ -147,14 +149,14 @@ const toggleTimer = async () => {
 }
 
 .timer-title {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
-    color: var(--text-normal);
+    color: var(--text-muted);
     margin: 0;
 }
 
 .timer-subtitle {
-    font-size: 14px;
+    font-size: 12px;
     color: var(--text-muted);
     margin: 4px 0 0 0;
     display: flex;

@@ -1,6 +1,7 @@
 import {Plugin, TFile, Modal, Setting, Notice} from 'obsidian';
 import {COLORS, TimeEntry} from "@/types.ts";
 import {useTimerStore} from "@/store/TimerStore.ts";
+import {t} from "@/i18n/helpers.ts";
 
 export class TimerService {
     plugin: Plugin;
@@ -76,16 +77,21 @@ export class TimerService {
         });
     }
 
-    async addTimeEntryToDailyNote(entry: TimeEntry): Promise<void> {
+    async addTimeEntryToDailyNote(entry: TimeEntry): Promise<Boolean> {
         const fileName = window.moment(entry.startTime).format('YYYY-MM-DD');
         const filePath = `${useTimerStore().settings.dailyNotesFolder}/${fileName}.md`;
 
         let file = this.plugin.app.vault.getAbstractFileByPath(filePath) as TFile;
         if (!file) {
-            file = await this.plugin.app.vault.create(
-                filePath,
-                `${useTimerStore().settings.timeEntryHeading}\n`
-            );
+            if (useTimerStore().settings.enableCreateNote) {
+                file = await this.plugin.app.vault.create(
+                    filePath,
+                    `${useTimerStore().settings.timeEntryHeading}\n`
+                );
+            } else {
+                this.notice(t('createNoteFirst'));
+                return false;
+            }
         }
 
         const startTimeStr = window.moment(entry.startTime).format('HH:mm');
@@ -93,10 +99,10 @@ export class TimerService {
         const tagStr = entry.tag ? ` #${entry.tag}` : '';
         const newEntryText = `${useTimerStore().settings.timeEntryPrefix} ${startTimeStr} - ${endTimeStr} ${entry.title}${tagStr}`;
 
-        const content = await this.plugin.app.vault.cachedRead(file);
+        const content = await this.plugin.app.vault.read(file);
         const lines = content.split('\n');
-        const headingIndex = lines.findIndex(line => line.trim() === useTimerStore().settings.timeEntryHeading);
 
+        const headingIndex = lines.findIndex(line => line.trim() === useTimerStore().settings.timeEntryHeading);
         if (headingIndex !== -1) {
             let insertIndex = headingIndex + 1;
             while (insertIndex < lines.length &&
@@ -108,7 +114,8 @@ export class TimerService {
             lines.push('', useTimerStore().settings.timeEntryHeading, newEntryText);
         }
 
-        await this.plugin.app.vault.modify(file, lines.join('\n'));
+        await this.plugin.app.vault.adapter.write(filePath, lines.join('\n'));
+        return true;
     }
 
     async getTodayEntries(): Promise<TimeEntry[]> {

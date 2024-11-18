@@ -59,5 +59,12 @@ export class TimerView extends ItemView {
                 useTimerStore().setEntries(entries);
             })
         );
+        // 监听文件删除事件
+        this.registerEvent(
+            this.app.vault.on('delete', async (): Promise<void> => {
+                const entries = await this.timerService.getTodayEntries();
+                useTimerStore().setEntries(entries);
+            })
+        );
     }
 }

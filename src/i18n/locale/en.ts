@@ -19,5 +19,8 @@ export default {
     settingPrefix: 'Time Entry Prefix',
     settingPrefixDesc: 'The prefix for each time entry',
     settingEnableCelebration: 'Enable Celebration',
-    settingEnableCelebrationDesc: 'Show confetti animation when completing a task'
+    settingEnableCelebrationDesc: 'Show confetti animation when completing a task',
+    settingEnableCreateNoteFirst: 'Enable Create Daily Note',
+    settingEnableCreateNoteFirstDesc: 'Enable Create Daily Note',
+    createNoteFirst: 'Please create daily note first',
 };
