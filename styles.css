@@ -152,10 +152,81 @@
     border-radius: 4px;
 }
 
-.custom-next .chart-container[data-v-9f1463bb],.custom-dialog .chart-container[data-v-9f1463bb], .custom-select .chart-container[data-v-9f1463bb], .chart-container[data-v-9f1463bb]:where(.custom-dialog,.custom-select) {
+.custom-next .chart-container[data-v-1b1311a6],.custom-dialog .chart-container[data-v-1b1311a6], .custom-select .chart-container[data-v-1b1311a6], .chart-container[data-v-1b1311a6]:where(.custom-dialog,.custom-select) {
     display: flex;
     flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--background-modifier-border);
+}
+.custom-next .chart-row[data-v-1b1311a6],.custom-dialog .chart-row[data-v-1b1311a6], .custom-select .chart-row[data-v-1b1311a6], .chart-row[data-v-1b1311a6]:where(.custom-dialog,.custom-select) {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+.custom-next .bar-chart[data-v-1b1311a6],.custom-dialog .bar-chart[data-v-1b1311a6], .custom-select .bar-chart[data-v-1b1311a6], .bar-chart[data-v-1b1311a6]:where(.custom-dialog,.custom-select), .custom-next .donut-chart[data-v-1b1311a6],.custom-dialog .donut-chart[data-v-1b1311a6], .custom-select .donut-chart[data-v-1b1311a6], .donut-chart[data-v-1b1311a6]:where(.custom-dialog,.custom-select) {
+    flex: 1;
+}
+.custom-next .bar-chart[data-v-1b1311a6],.custom-dialog .bar-chart[data-v-1b1311a6], .custom-select .bar-chart[data-v-1b1311a6], .bar-chart[data-v-1b1311a6]:where(.custom-dialog,.custom-select) {
+    border-bottom: 1px solid var(--background-modifier-border);
+}
+.custom-next .project-list[data-v-1b1311a6],.custom-dialog .project-list[data-v-1b1311a6], .custom-select .project-list[data-v-1b1311a6], .project-list[data-v-1b1311a6]:where(.custom-dialog,.custom-select) {
+    margin-top: 1rem;
+    border-top: 1px solid var(--background-modifier-border);
+    padding-top: 1rem;
+}
+.custom-next .project-list h3[data-v-1b1311a6],.custom-dialog .project-list h3[data-v-1b1311a6], .custom-select .project-list h3[data-v-1b1311a6], .project-list h3[data-v-1b1311a6]:where(.custom-dialog,.custom-select) {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.2em;
+    color: var(--text-normal);
+}
+.custom-next .list-header[data-v-1b1311a6],.custom-dialog .list-header[data-v-1b1311a6], .custom-select .list-header[data-v-1b1311a6], .list-header[data-v-1b1311a6]:where(.custom-dialog,.custom-select) {
+    display: flex;
+    justify-content: flex-end;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: var(--text-muted);
+}
+.custom-next .list-header span[data-v-1b1311a6]:first-child ,.custom-dialog .list-header span[data-v-1b1311a6]:first-child, .custom-select .list-header span[data-v-1b1311a6]:first-child, .list-header span[data-v-1b1311a6]:first-child:where(.custom-dialog,.custom-select) {
+    margin-right: 2rem;
+}
+.custom-next .project-item[data-v-1b1311a6],.custom-dialog .project-item[data-v-1b1311a6], .custom-select .project-item[data-v-1b1311a6], .project-item[data-v-1b1311a6]:where(.custom-dialog,.custom-select) {
+    display: flex;
     align-items: center;
-    padding: 20px;
-    border-radius: 8px;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+}
+.custom-next .project-color[data-v-1b1311a6],.custom-dialog .project-color[data-v-1b1311a6], .custom-select .project-color[data-v-1b1311a6], .project-color[data-v-1b1311a6]:where(.custom-dialog,.custom-select) {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+.custom-next .project-name[data-v-1b1311a6],.custom-dialog .project-name[data-v-1b1311a6], .custom-select .project-name[data-v-1b1311a6], .project-name[data-v-1b1311a6]:where(.custom-dialog,.custom-select) {
+    flex: 1;
+    color: var(--text-normal);
+}
+.custom-next .project-time[data-v-1b1311a6],.custom-dialog .project-time[data-v-1b1311a6], .custom-select .project-time[data-v-1b1311a6], .project-time[data-v-1b1311a6]:where(.custom-dialog,.custom-select), .custom-next .project-percent[data-v-1b1311a6],.custom-dialog .project-percent[data-v-1b1311a6], .custom-select .project-percent[data-v-1b1311a6], .project-percent[data-v-1b1311a6]:where(.custom-dialog,.custom-select) {
+    color: var(--text-muted);
+}
+.custom-next .project-time[data-v-1b1311a6],.custom-dialog .project-time[data-v-1b1311a6], .custom-select .project-time[data-v-1b1311a6], .project-time[data-v-1b1311a6]:where(.custom-dialog,.custom-select) {
+    margin-right: 2rem;
+}
+.custom-next[data-v-1b1311a6] .grid line,.custom-dialog[data-v-1b1311a6] .grid line, .custom-select[data-v-1b1311a6] .grid line,[data-v-1b1311a6] .grid line:where(.custom-dialog,.custom-select) {
+    stroke: var(--background-modifier-border);
+    stroke-opacity: 0.5;
+    shape-rendering: crispEdges;
+}
+.custom-next[data-v-1b1311a6] .grid path,.custom-dialog[data-v-1b1311a6] .grid path, .custom-select[data-v-1b1311a6] .grid path,[data-v-1b1311a6] .grid path:where(.custom-dialog,.custom-select) {
+    stroke-width: 0;
+}
+.custom-next[data-v-1b1311a6] .tick line,.custom-dialog[data-v-1b1311a6] .tick line, .custom-select[data-v-1b1311a6] .tick line,[data-v-1b1311a6] .tick line:where(.custom-dialog,.custom-select) {
+    stroke: var(--background-modifier-border);
+}
+.custom-next[data-v-1b1311a6] .tick text,.custom-dialog[data-v-1b1311a6] .tick text, .custom-select[data-v-1b1311a6] .tick text,[data-v-1b1311a6] .tick text:where(.custom-dialog,.custom-select) {
+    fill: var(--text-muted);
+}
+.custom-next[data-v-1b1311a6] .domain,.custom-dialog[data-v-1b1311a6] .domain, .custom-select[data-v-1b1311a6] .domain,[data-v-1b1311a6] .domain:where(.custom-dialog,.custom-select) {
+    stroke: var(--background-modifier-border);
 }

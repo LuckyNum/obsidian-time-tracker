@@ -7255,8 +7255,8 @@ var module$1 = {};
   function onlyPositiveInt(number2) {
     return number2 < 0 ? 0 : Math.floor(number2);
   }
-  function randomInt(min, max2) {
-    return Math.floor(Math.random() * (max2 - min)) + min;
+  function randomInt(min2, max2) {
+    return Math.floor(Math.random() * (max2 - min2)) + min2;
   }
   function toDecimal(str) {
     return parseInt(str, 16);
@@ -7745,14 +7745,14 @@ var module$1 = {};
 const confetti = module$1.exports;
 module$1.exports.create;
 const _hoisted_1$1 = { class: "timer-container" };
-const _hoisted_2 = { class: "timer-header" };
-const _hoisted_3 = { class: "timer-info" };
-const _hoisted_4 = { class: "timer-title" };
-const _hoisted_5 = {
+const _hoisted_2$1 = { class: "timer-header" };
+const _hoisted_3$1 = { class: "timer-info" };
+const _hoisted_4$1 = { class: "timer-title" };
+const _hoisted_5$1 = {
   key: 0,
   class: "timer-subtitle"
 };
-const _hoisted_6 = {
+const _hoisted_6$1 = {
   key: 1,
   class: "timer-subtitle"
 };
@@ -7825,10 +7825,10 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
     };
     return (_ctx, _cache) => {
       return openBlock(), createElementBlock("div", _hoisted_1$1, [
-        createBaseVNode("div", _hoisted_2, [
-          createBaseVNode("div", _hoisted_3, [
-            createBaseVNode("h2", _hoisted_4, toDisplayString(unref(activeEntry) ? unref(activeEntry).title : unref(t)("noActive")), 1),
-            !unref(activeEntry) ? (openBlock(), createElementBlock("p", _hoisted_5, toDisplayString(unref(t)("start")), 1)) : (openBlock(), createElementBlock("p", _hoisted_6, [
+        createBaseVNode("div", _hoisted_2$1, [
+          createBaseVNode("div", _hoisted_3$1, [
+            createBaseVNode("h2", _hoisted_4$1, toDisplayString(unref(activeEntry) ? unref(activeEntry).title : unref(t)("noActive")), 1),
+            !unref(activeEntry) ? (openBlock(), createElementBlock("p", _hoisted_5$1, toDisplayString(unref(t)("start")), 1)) : (openBlock(), createElementBlock("p", _hoisted_6$1, [
               createBaseVNode("span", {
                 class: "timer-tag",
                 style: normalizeStyle({ backgroundColor: getEntryColor(unref(entries).length) })
@@ -8120,7 +8120,7 @@ const CODEBLOCK_LANG = "time-tracker";
 function ascending$1(a, b) {
   return a == null || b == null ? NaN : a < b ? -1 : a > b ? 1 : a >= b ? 0 : NaN;
 }
-function descending(a, b) {
+function descending$1(a, b) {
   return a == null || b == null ? NaN : b < a ? -1 : b > a ? 1 : b >= a ? 0 : NaN;
 }
 function bisector(f) {
@@ -8130,7 +8130,7 @@ function bisector(f) {
     compare2 = (d, x) => ascending$1(f(d), x);
     delta = (d, x) => f(d) - x;
   } else {
-    compare1 = f === ascending$1 || f === descending ? f : zero$1;
+    compare1 = f === ascending$1 || f === descending$1 ? f : zero$1;
     compare2 = f;
     delta = f;
   }
@@ -8257,24 +8257,6 @@ function tickStep(start2, stop, count) {
   const reverse = stop < start2, inc = reverse ? tickIncrement(stop, start2, count) : tickIncrement(start2, stop, count);
   return (reverse ? -1 : 1) * (inc < 0 ? 1 / -inc : inc);
 }
-function max(values, valueof) {
-  let max2;
-  if (valueof === void 0) {
-    for (const value of values) {
-      if (value != null && (max2 < value || max2 === void 0 && value >= value)) {
-        max2 = value;
-      }
-    }
-  } else {
-    let index = -1;
-    for (let value of values) {
-      if ((value = valueof(value, ++index, values)) != null && (max2 < value || max2 === void 0 && value >= value)) {
-        max2 = value;
-      }
-    }
-  }
-  return max2;
-}
 function range(start2, stop, step) {
   start2 = +start2, stop = +stop, step = (n = arguments.length) < 2 ? (stop = start2, start2 = 0, 1) : n < 3 ? 1 : +step;
   var i = -1, n = Math.max(0, Math.ceil((stop - start2) / step)) | 0, range2 = new Array(n);
@@ -8283,10 +8265,10 @@ function range(start2, stop, step) {
   }
   return range2;
 }
-function identity$3(x) {
+function identity$4(x) {
   return x;
 }
-var top = 1, right = 2, bottom = 3, left = 4, epsilon = 1e-6;
+var top = 1, right = 2, bottom = 3, left = 4, epsilon$2 = 1e-6;
 function translateX(x) {
   return "translate(" + x + ",0)";
 }
@@ -8307,7 +8289,7 @@ function entering() {
 function axis(orient, scale) {
   var tickArguments = [], tickValues = null, tickFormat2 = null, tickSizeInner = 6, tickSizeOuter = 6, tickPadding = 3, offset = typeof window !== "undefined" && window.devicePixelRatio > 1 ? 0 : 0.5, k = orient === top || orient === left ? -1 : 1, x = orient === left || orient === right ? "x" : "y", transform = orient === top || orient === bottom ? translateX : translateY;
   function axis2(context) {
-    var values = tickValues == null ? scale.ticks ? scale.ticks.apply(scale, tickArguments) : scale.domain() : tickValues, format2 = tickFormat2 == null ? scale.tickFormat ? scale.tickFormat.apply(scale, tickArguments) : identity$3 : tickFormat2, spacing = Math.max(tickSizeInner, 0) + tickPadding, range2 = scale.range(), range0 = +range2[0] + offset, range1 = +range2[range2.length - 1] + offset, position = (scale.bandwidth ? center : number$1)(scale.copy(), offset), selection2 = context.selection ? context.selection() : context, path = selection2.selectAll(".domain").data([null]), tick = selection2.selectAll(".tick").data(values, scale).order(), tickExit = tick.exit(), tickEnter = tick.enter().append("g").attr("class", "tick"), line = tick.select("line"), text = tick.select("text");
+    var values = tickValues == null ? scale.ticks ? scale.ticks.apply(scale, tickArguments) : scale.domain() : tickValues, format2 = tickFormat2 == null ? scale.tickFormat ? scale.tickFormat.apply(scale, tickArguments) : identity$4 : tickFormat2, spacing = Math.max(tickSizeInner, 0) + tickPadding, range2 = scale.range(), range0 = +range2[0] + offset, range1 = +range2[range2.length - 1] + offset, position = (scale.bandwidth ? center : number$1)(scale.copy(), offset), selection2 = context.selection ? context.selection() : context, path = selection2.selectAll(".domain").data([null]), tick = selection2.selectAll(".tick").data(values, scale).order(), tickExit = tick.exit(), tickEnter = tick.enter().append("g").attr("class", "tick"), line = tick.select("line"), text = tick.select("text");
     path = path.merge(path.enter().insert("path", ".tick").attr("class", "domain").attr("stroke", "currentColor"));
     tick = tick.merge(tickEnter);
     line = line.merge(tickEnter.append("line").attr("stroke", "currentColor").attr(x + "2", k * tickSizeInner));
@@ -8317,10 +8299,10 @@ function axis(orient, scale) {
       tick = tick.transition(context);
       line = line.transition(context);
       text = text.transition(context);
-      tickExit = tickExit.transition(context).attr("opacity", epsilon).attr("transform", function(d) {
+      tickExit = tickExit.transition(context).attr("opacity", epsilon$2).attr("transform", function(d) {
         return isFinite(d = position(d)) ? transform(d + offset) : this.getAttribute("transform");
       });
-      tickEnter.attr("opacity", epsilon).attr("transform", function(d) {
+      tickEnter.attr("opacity", epsilon$2).attr("transform", function(d) {
         var p2 = this.parentNode.__axis;
         return transform((p2 && isFinite(p2 = p2(d)) ? p2 : position(d)) + offset);
       });
@@ -8489,7 +8471,7 @@ function selection_select(select2) {
   }
   return new Selection$1(subgroups, this._parents);
 }
-function array(x) {
+function array$1(x) {
   return x == null ? [] : Array.isArray(x) ? x : Array.from(x);
 }
 function empty() {
@@ -8502,7 +8484,7 @@ function selectorAll(selector2) {
 }
 function arrayAll(select2) {
   return function() {
-    return array(select2.apply(this, arguments));
+    return array$1(select2.apply(this, arguments));
   };
 }
 function selection_selectAll(select2) {
@@ -8591,7 +8573,7 @@ EnterNode.prototype = {
     return this._parent.querySelectorAll(selector2);
   }
 };
-function constant$1(x) {
+function constant$2(x) {
   return function() {
     return x;
   };
@@ -8646,7 +8628,7 @@ function datum(node) {
 function selection_data(value, key) {
   if (!arguments.length) return Array.from(this, datum);
   var bind = key ? bindKey : bindIndex, parents = this._parents, groups = this._groups;
-  if (typeof value !== "function") value = constant$1(value);
+  if (typeof value !== "function") value = constant$2(value);
   for (var m = groups.length, update = new Array(m), enter = new Array(m), exit = new Array(m), j = 0; j < m; ++j) {
     var parent = parents[j], group = groups[j], groupLength = group.length, data = arraylike(value.call(parent, parent && parent.__data__, j, parents)), dataLength = data.length, enterGroup = enter[j] = new Array(dataLength), updateGroup = update[j] = new Array(dataLength), exitGroup = exit[j] = new Array(groupLength);
     bind(parent, group, enterGroup, updateGroup, exitGroup, data, key);
@@ -9412,12 +9394,12 @@ function hslConvert(o) {
   if (!o) return new Hsl();
   if (o instanceof Hsl) return o;
   o = o.rgb();
-  var r = o.r / 255, g = o.g / 255, b = o.b / 255, min = Math.min(r, g, b), max2 = Math.max(r, g, b), h2 = NaN, s = max2 - min, l = (max2 + min) / 2;
+  var r = o.r / 255, g = o.g / 255, b = o.b / 255, min2 = Math.min(r, g, b), max2 = Math.max(r, g, b), h2 = NaN, s = max2 - min2, l = (max2 + min2) / 2;
   if (s) {
     if (r === max2) h2 = (g - b) / s + (g < b) * 6;
     else if (g === max2) h2 = (b - r) / s + 2;
     else h2 = (r - g) / s + 4;
-    s /= l < 0.5 ? max2 + min : 2 - max2 - min;
+    s /= l < 0.5 ? max2 + min2 : 2 - max2 - min2;
     h2 *= 60;
   } else {
     s = l > 0 && l < 1 ? 0 : h2;
@@ -9472,7 +9454,7 @@ function clampt(value) {
 function hsl2rgb(h2, m1, m2) {
   return (h2 < 60 ? m1 + (m2 - m1) * h2 / 60 : h2 < 180 ? m2 : h2 < 240 ? m1 + (m2 - m1) * (240 - h2) / 60 : m1) * 255;
 }
-const constant = (x) => () => x;
+const constant$1 = (x) => () => x;
 function linear$1(a, d) {
   return function(t2) {
     return a + t2 * d;
@@ -9485,12 +9467,12 @@ function exponential(a, b, y) {
 }
 function gamma(y) {
   return (y = +y) === 1 ? nogamma : function(a, b) {
-    return b - a ? exponential(a, b, y) : constant(isNaN(a) ? b : a);
+    return b - a ? exponential(a, b, y) : constant$1(isNaN(a) ? b : a);
   };
 }
 function nogamma(a, b) {
   var d = b - a;
-  return d ? linear$1(a, d) : constant(isNaN(a) ? b : a);
+  return d ? linear$1(a, d) : constant$1(isNaN(a) ? b : a);
 }
 const interpolateRgb = function rgbGamma(y) {
   var color2 = gamma(y);
@@ -9595,7 +9577,7 @@ function interpolateString(a, b) {
 }
 function interpolate$1(a, b) {
   var t2 = typeof b, c;
-  return b == null || t2 === "boolean" ? constant(b) : (t2 === "number" ? interpolateNumber : t2 === "string" ? (c = color(b)) ? (b = c, interpolateRgb) : interpolateString : b instanceof color ? interpolateRgb : b instanceof Date ? date : isNumberArray(b) ? numberArray : Array.isArray(b) ? genericArray : typeof b.valueOf !== "function" && typeof b.toString !== "function" || isNaN(b) ? object : interpolateNumber)(a, b);
+  return b == null || t2 === "boolean" ? constant$1(b) : (t2 === "number" ? interpolateNumber : t2 === "string" ? (c = color(b)) ? (b = c, interpolateRgb) : interpolateString : b instanceof color ? interpolateRgb : b instanceof Date ? date : isNumberArray(b) ? numberArray : Array.isArray(b) ? genericArray : typeof b.valueOf !== "function" && typeof b.toString !== "function" || isNaN(b) ? object : interpolateNumber)(a, b);
 }
 function interpolateRound(a, b) {
   return a = +a, b = +b, function(t2) {
@@ -9603,7 +9585,7 @@ function interpolateRound(a, b) {
   };
 }
 var degrees = 180 / Math.PI;
-var identity$2 = {
+var identity$3 = {
   translateX: 0,
   translateY: 0,
   rotate: 0,
@@ -9629,13 +9611,13 @@ function decompose(a, b, c, d, e, f) {
 var svgNode;
 function parseCss(value) {
   const m = new (typeof DOMMatrix === "function" ? DOMMatrix : WebKitCSSMatrix)(value + "");
-  return m.isIdentity ? identity$2 : decompose(m.a, m.b, m.c, m.d, m.e, m.f);
+  return m.isIdentity ? identity$3 : decompose(m.a, m.b, m.c, m.d, m.e, m.f);
 }
 function parseSvg(value) {
-  if (value == null) return identity$2;
+  if (value == null) return identity$3;
   if (!svgNode) svgNode = document.createElementNS("http://www.w3.org/2000/svg", "g");
   svgNode.setAttribute("transform", value);
-  if (!(value = svgNode.transform.baseVal.consolidate())) return identity$2;
+  if (!(value = svgNode.transform.baseVal.consolidate())) return identity$3;
   value = value.matrix;
   return decompose(value.a, value.b, value.c, value.d, value.e, value.f);
 }
@@ -10423,6 +10405,91 @@ function selection_transition(name) {
 }
 selection.prototype.interrupt = selection_interrupt;
 selection.prototype.transition = selection_transition;
+const pi$1 = Math.PI, tau$1 = 2 * pi$1, epsilon$1 = 1e-6, tauEpsilon = tau$1 - epsilon$1;
+function append(strings) {
+  this._ += strings[0];
+  for (let i = 1, n = strings.length; i < n; ++i) {
+    this._ += arguments[i] + strings[i];
+  }
+}
+function appendRound(digits) {
+  let d = Math.floor(digits);
+  if (!(d >= 0)) throw new Error(`invalid digits: ${digits}`);
+  if (d > 15) return append;
+  const k = 10 ** d;
+  return function(strings) {
+    this._ += strings[0];
+    for (let i = 1, n = strings.length; i < n; ++i) {
+      this._ += Math.round(arguments[i] * k) / k + strings[i];
+    }
+  };
+}
+class Path {
+  constructor(digits) {
+    this._x0 = this._y0 = // start of current subpath
+    this._x1 = this._y1 = null;
+    this._ = "";
+    this._append = digits == null ? append : appendRound(digits);
+  }
+  moveTo(x, y) {
+    this._append`M${this._x0 = this._x1 = +x},${this._y0 = this._y1 = +y}`;
+  }
+  closePath() {
+    if (this._x1 !== null) {
+      this._x1 = this._x0, this._y1 = this._y0;
+      this._append`Z`;
+    }
+  }
+  lineTo(x, y) {
+    this._append`L${this._x1 = +x},${this._y1 = +y}`;
+  }
+  quadraticCurveTo(x1, y1, x, y) {
+    this._append`Q${+x1},${+y1},${this._x1 = +x},${this._y1 = +y}`;
+  }
+  bezierCurveTo(x1, y1, x2, y2, x, y) {
+    this._append`C${+x1},${+y1},${+x2},${+y2},${this._x1 = +x},${this._y1 = +y}`;
+  }
+  arcTo(x1, y1, x2, y2, r) {
+    x1 = +x1, y1 = +y1, x2 = +x2, y2 = +y2, r = +r;
+    if (r < 0) throw new Error(`negative radius: ${r}`);
+    let x0 = this._x1, y0 = this._y1, x21 = x2 - x1, y21 = y2 - y1, x01 = x0 - x1, y01 = y0 - y1, l01_2 = x01 * x01 + y01 * y01;
+    if (this._x1 === null) {
+      this._append`M${this._x1 = x1},${this._y1 = y1}`;
+    } else if (!(l01_2 > epsilon$1)) ;
+    else if (!(Math.abs(y01 * x21 - y21 * x01) > epsilon$1) || !r) {
+      this._append`L${this._x1 = x1},${this._y1 = y1}`;
+    } else {
+      let x20 = x2 - x0, y20 = y2 - y0, l21_2 = x21 * x21 + y21 * y21, l20_2 = x20 * x20 + y20 * y20, l21 = Math.sqrt(l21_2), l01 = Math.sqrt(l01_2), l = r * Math.tan((pi$1 - Math.acos((l21_2 + l01_2 - l20_2) / (2 * l21 * l01))) / 2), t01 = l / l01, t21 = l / l21;
+      if (Math.abs(t01 - 1) > epsilon$1) {
+        this._append`L${x1 + t01 * x01},${y1 + t01 * y01}`;
+      }
+      this._append`A${r},${r},0,0,${+(y01 * x20 > x01 * y20)},${this._x1 = x1 + t21 * x21},${this._y1 = y1 + t21 * y21}`;
+    }
+  }
+  arc(x, y, r, a0, a1, ccw) {
+    x = +x, y = +y, r = +r, ccw = !!ccw;
+    if (r < 0) throw new Error(`negative radius: ${r}`);
+    let dx = r * Math.cos(a0), dy = r * Math.sin(a0), x0 = x + dx, y0 = y + dy, cw = 1 ^ ccw, da2 = ccw ? a0 - a1 : a1 - a0;
+    if (this._x1 === null) {
+      this._append`M${x0},${y0}`;
+    } else if (Math.abs(this._x1 - x0) > epsilon$1 || Math.abs(this._y1 - y0) > epsilon$1) {
+      this._append`L${x0},${y0}`;
+    }
+    if (!r) return;
+    if (da2 < 0) da2 = da2 % tau$1 + tau$1;
+    if (da2 > tauEpsilon) {
+      this._append`A${r},${r},0,1,${cw},${x - dx},${y - dy}A${r},${r},0,1,${cw},${this._x1 = x0},${this._y1 = y0}`;
+    } else if (da2 > epsilon$1) {
+      this._append`A${r},${r},0,${+(da2 >= pi$1)},${cw},${this._x1 = x + r * Math.cos(a1)},${this._y1 = y + r * Math.sin(a1)}`;
+    }
+  }
+  rect(x, y, w, h2) {
+    this._append`M${this._x0 = this._x1 = +x},${this._y0 = this._y1 = +y}h${w = +w}v${+h2}h${-w}Z`;
+  }
+  toString() {
+    return this._;
+  }
+}
 function formatDecimal(x) {
   return Math.abs(x = Math.round(x)) >= 1e21 ? x.toLocaleString("en").replace(/,/g, "") : x.toString(10);
 }
@@ -10535,12 +10602,12 @@ const formatTypes = {
   "X": (x) => Math.round(x).toString(16).toUpperCase(),
   "x": (x) => Math.round(x).toString(16)
 };
-function identity$1(x) {
+function identity$2(x) {
   return x;
 }
 var map = Array.prototype.map, prefixes = ["y", "z", "a", "f", "p", "n", "µ", "m", "", "k", "M", "G", "T", "P", "E", "Z", "Y"];
 function formatLocale(locale2) {
-  var group = locale2.grouping === void 0 || locale2.thousands === void 0 ? identity$1 : formatGroup(map.call(locale2.grouping, Number), locale2.thousands + ""), currencyPrefix = locale2.currency === void 0 ? "" : locale2.currency[0] + "", currencySuffix = locale2.currency === void 0 ? "" : locale2.currency[1] + "", decimal = locale2.decimal === void 0 ? "." : locale2.decimal + "", numerals = locale2.numerals === void 0 ? identity$1 : formatNumerals(map.call(locale2.numerals, String)), percent = locale2.percent === void 0 ? "%" : locale2.percent + "", minus = locale2.minus === void 0 ? "−" : locale2.minus + "", nan = locale2.nan === void 0 ? "NaN" : locale2.nan + "";
+  var group = locale2.grouping === void 0 || locale2.thousands === void 0 ? identity$2 : formatGroup(map.call(locale2.grouping, Number), locale2.thousands + ""), currencyPrefix = locale2.currency === void 0 ? "" : locale2.currency[0] + "", currencySuffix = locale2.currency === void 0 ? "" : locale2.currency[1] + "", decimal = locale2.decimal === void 0 ? "." : locale2.decimal + "", numerals = locale2.numerals === void 0 ? identity$2 : formatNumerals(map.call(locale2.numerals, String)), percent = locale2.percent === void 0 ? "%" : locale2.percent + "", minus = locale2.minus === void 0 ? "−" : locale2.minus + "", nan = locale2.nan === void 0 ? "NaN" : locale2.nan + "";
   function newFormat(specifier) {
     specifier = formatSpecifier(specifier);
     var fill = specifier.fill, align = specifier.align, sign = specifier.sign, symbol = specifier.symbol, zero2 = specifier.zero, width = specifier.width, comma = specifier.comma, precision = specifier.precision, trim = specifier.trim, type = specifier.type;
@@ -10737,7 +10804,7 @@ function number(x) {
   return +x;
 }
 var unit = [0, 1];
-function identity(x) {
+function identity$1(x) {
   return x;
 }
 function normalize(a, b) {
@@ -10779,10 +10846,10 @@ function copy(source, target) {
   return target.domain(source.domain()).range(source.range()).interpolate(source.interpolate()).clamp(source.clamp()).unknown(source.unknown());
 }
 function transformer() {
-  var domain = unit, range2 = unit, interpolate2 = interpolate$1, transform, untransform, unknown, clamp = identity, piecewise, output, input;
+  var domain = unit, range2 = unit, interpolate2 = interpolate$1, transform, untransform, unknown, clamp = identity$1, piecewise, output, input;
   function rescale() {
     var n = Math.min(domain.length, range2.length);
-    if (clamp !== identity) clamp = clamper(domain[0], domain[n - 1]);
+    if (clamp !== identity$1) clamp = clamper(domain[0], domain[n - 1]);
     piecewise = n > 2 ? polymap : bimap;
     output = input = null;
     return scale;
@@ -10803,7 +10870,7 @@ function transformer() {
     return range2 = Array.from(_), interpolate2 = interpolateRound, rescale();
   };
   scale.clamp = function(_) {
-    return arguments.length ? (clamp = _ ? true : identity, rescale()) : clamp !== identity;
+    return arguments.length ? (clamp = _ ? true : identity$1, rescale()) : clamp !== identity$1;
   };
   scale.interpolate = function(_) {
     return arguments.length ? (interpolate2 = _, rescale()) : interpolate2;
@@ -10817,7 +10884,7 @@ function transformer() {
   };
 }
 function continuous() {
-  return transformer()(identity, identity);
+  return transformer()(identity$1, identity$1);
 }
 function tickFormat(start2, stop, count, specifier) {
   var step = tickStep(start2, stop, count), precision;
@@ -10897,6 +10964,226 @@ function linear() {
   initRange.apply(scale, arguments);
   return linearish(scale);
 }
+function constant(x) {
+  return function constant2() {
+    return x;
+  };
+}
+const abs = Math.abs;
+const atan2 = Math.atan2;
+const cos = Math.cos;
+const max = Math.max;
+const min = Math.min;
+const sin = Math.sin;
+const sqrt = Math.sqrt;
+const epsilon = 1e-12;
+const pi = Math.PI;
+const halfPi = pi / 2;
+const tau = 2 * pi;
+function acos(x) {
+  return x > 1 ? 0 : x < -1 ? pi : Math.acos(x);
+}
+function asin(x) {
+  return x >= 1 ? halfPi : x <= -1 ? -halfPi : Math.asin(x);
+}
+function withPath(shape) {
+  let digits = 3;
+  shape.digits = function(_) {
+    if (!arguments.length) return digits;
+    if (_ == null) {
+      digits = null;
+    } else {
+      const d = Math.floor(_);
+      if (!(d >= 0)) throw new RangeError(`invalid digits: ${_}`);
+      digits = d;
+    }
+    return shape;
+  };
+  return () => new Path(digits);
+}
+function arcInnerRadius(d) {
+  return d.innerRadius;
+}
+function arcOuterRadius(d) {
+  return d.outerRadius;
+}
+function arcStartAngle(d) {
+  return d.startAngle;
+}
+function arcEndAngle(d) {
+  return d.endAngle;
+}
+function arcPadAngle(d) {
+  return d && d.padAngle;
+}
+function intersect(x0, y0, x1, y1, x2, y2, x3, y3) {
+  var x10 = x1 - x0, y10 = y1 - y0, x32 = x3 - x2, y32 = y3 - y2, t2 = y32 * x10 - x32 * y10;
+  if (t2 * t2 < epsilon) return;
+  t2 = (x32 * (y0 - y2) - y32 * (x0 - x2)) / t2;
+  return [x0 + t2 * x10, y0 + t2 * y10];
+}
+function cornerTangents(x0, y0, x1, y1, r1, rc, cw) {
+  var x01 = x0 - x1, y01 = y0 - y1, lo = (cw ? rc : -rc) / sqrt(x01 * x01 + y01 * y01), ox = lo * y01, oy = -lo * x01, x11 = x0 + ox, y11 = y0 + oy, x10 = x1 + ox, y10 = y1 + oy, x00 = (x11 + x10) / 2, y00 = (y11 + y10) / 2, dx = x10 - x11, dy = y10 - y11, d2 = dx * dx + dy * dy, r = r1 - rc, D = x11 * y10 - x10 * y11, d = (dy < 0 ? -1 : 1) * sqrt(max(0, r * r * d2 - D * D)), cx0 = (D * dy - dx * d) / d2, cy0 = (-D * dx - dy * d) / d2, cx1 = (D * dy + dx * d) / d2, cy1 = (-D * dx + dy * d) / d2, dx0 = cx0 - x00, dy0 = cy0 - y00, dx1 = cx1 - x00, dy1 = cy1 - y00;
+  if (dx0 * dx0 + dy0 * dy0 > dx1 * dx1 + dy1 * dy1) cx0 = cx1, cy0 = cy1;
+  return {
+    cx: cx0,
+    cy: cy0,
+    x01: -ox,
+    y01: -oy,
+    x11: cx0 * (r1 / r - 1),
+    y11: cy0 * (r1 / r - 1)
+  };
+}
+function arc() {
+  var innerRadius = arcInnerRadius, outerRadius = arcOuterRadius, cornerRadius = constant(0), padRadius = null, startAngle = arcStartAngle, endAngle = arcEndAngle, padAngle = arcPadAngle, context = null, path = withPath(arc2);
+  function arc2() {
+    var buffer, r, r0 = +innerRadius.apply(this, arguments), r1 = +outerRadius.apply(this, arguments), a0 = startAngle.apply(this, arguments) - halfPi, a1 = endAngle.apply(this, arguments) - halfPi, da2 = abs(a1 - a0), cw = a1 > a0;
+    if (!context) context = buffer = path();
+    if (r1 < r0) r = r1, r1 = r0, r0 = r;
+    if (!(r1 > epsilon)) context.moveTo(0, 0);
+    else if (da2 > tau - epsilon) {
+      context.moveTo(r1 * cos(a0), r1 * sin(a0));
+      context.arc(0, 0, r1, a0, a1, !cw);
+      if (r0 > epsilon) {
+        context.moveTo(r0 * cos(a1), r0 * sin(a1));
+        context.arc(0, 0, r0, a1, a0, cw);
+      }
+    } else {
+      var a01 = a0, a11 = a1, a00 = a0, a10 = a1, da0 = da2, da1 = da2, ap = padAngle.apply(this, arguments) / 2, rp = ap > epsilon && (padRadius ? +padRadius.apply(this, arguments) : sqrt(r0 * r0 + r1 * r1)), rc = min(abs(r1 - r0) / 2, +cornerRadius.apply(this, arguments)), rc0 = rc, rc1 = rc, t0, t1;
+      if (rp > epsilon) {
+        var p0 = asin(rp / r0 * sin(ap)), p1 = asin(rp / r1 * sin(ap));
+        if ((da0 -= p0 * 2) > epsilon) p0 *= cw ? 1 : -1, a00 += p0, a10 -= p0;
+        else da0 = 0, a00 = a10 = (a0 + a1) / 2;
+        if ((da1 -= p1 * 2) > epsilon) p1 *= cw ? 1 : -1, a01 += p1, a11 -= p1;
+        else da1 = 0, a01 = a11 = (a0 + a1) / 2;
+      }
+      var x01 = r1 * cos(a01), y01 = r1 * sin(a01), x10 = r0 * cos(a10), y10 = r0 * sin(a10);
+      if (rc > epsilon) {
+        var x11 = r1 * cos(a11), y11 = r1 * sin(a11), x00 = r0 * cos(a00), y00 = r0 * sin(a00), oc;
+        if (da2 < pi) {
+          if (oc = intersect(x01, y01, x00, y00, x11, y11, x10, y10)) {
+            var ax = x01 - oc[0], ay = y01 - oc[1], bx = x11 - oc[0], by = y11 - oc[1], kc = 1 / sin(acos((ax * bx + ay * by) / (sqrt(ax * ax + ay * ay) * sqrt(bx * bx + by * by))) / 2), lc = sqrt(oc[0] * oc[0] + oc[1] * oc[1]);
+            rc0 = min(rc, (r0 - lc) / (kc - 1));
+            rc1 = min(rc, (r1 - lc) / (kc + 1));
+          } else {
+            rc0 = rc1 = 0;
+          }
+        }
+      }
+      if (!(da1 > epsilon)) context.moveTo(x01, y01);
+      else if (rc1 > epsilon) {
+        t0 = cornerTangents(x00, y00, x01, y01, r1, rc1, cw);
+        t1 = cornerTangents(x11, y11, x10, y10, r1, rc1, cw);
+        context.moveTo(t0.cx + t0.x01, t0.cy + t0.y01);
+        if (rc1 < rc) context.arc(t0.cx, t0.cy, rc1, atan2(t0.y01, t0.x01), atan2(t1.y01, t1.x01), !cw);
+        else {
+          context.arc(t0.cx, t0.cy, rc1, atan2(t0.y01, t0.x01), atan2(t0.y11, t0.x11), !cw);
+          context.arc(0, 0, r1, atan2(t0.cy + t0.y11, t0.cx + t0.x11), atan2(t1.cy + t1.y11, t1.cx + t1.x11), !cw);
+          context.arc(t1.cx, t1.cy, rc1, atan2(t1.y11, t1.x11), atan2(t1.y01, t1.x01), !cw);
+        }
+      } else context.moveTo(x01, y01), context.arc(0, 0, r1, a01, a11, !cw);
+      if (!(r0 > epsilon) || !(da0 > epsilon)) context.lineTo(x10, y10);
+      else if (rc0 > epsilon) {
+        t0 = cornerTangents(x10, y10, x11, y11, r0, -rc0, cw);
+        t1 = cornerTangents(x01, y01, x00, y00, r0, -rc0, cw);
+        context.lineTo(t0.cx + t0.x01, t0.cy + t0.y01);
+        if (rc0 < rc) context.arc(t0.cx, t0.cy, rc0, atan2(t0.y01, t0.x01), atan2(t1.y01, t1.x01), !cw);
+        else {
+          context.arc(t0.cx, t0.cy, rc0, atan2(t0.y01, t0.x01), atan2(t0.y11, t0.x11), !cw);
+          context.arc(0, 0, r0, atan2(t0.cy + t0.y11, t0.cx + t0.x11), atan2(t1.cy + t1.y11, t1.cx + t1.x11), cw);
+          context.arc(t1.cx, t1.cy, rc0, atan2(t1.y11, t1.x11), atan2(t1.y01, t1.x01), !cw);
+        }
+      } else context.arc(0, 0, r0, a10, a00, cw);
+    }
+    context.closePath();
+    if (buffer) return context = null, buffer + "" || null;
+  }
+  arc2.centroid = function() {
+    var r = (+innerRadius.apply(this, arguments) + +outerRadius.apply(this, arguments)) / 2, a = (+startAngle.apply(this, arguments) + +endAngle.apply(this, arguments)) / 2 - pi / 2;
+    return [cos(a) * r, sin(a) * r];
+  };
+  arc2.innerRadius = function(_) {
+    return arguments.length ? (innerRadius = typeof _ === "function" ? _ : constant(+_), arc2) : innerRadius;
+  };
+  arc2.outerRadius = function(_) {
+    return arguments.length ? (outerRadius = typeof _ === "function" ? _ : constant(+_), arc2) : outerRadius;
+  };
+  arc2.cornerRadius = function(_) {
+    return arguments.length ? (cornerRadius = typeof _ === "function" ? _ : constant(+_), arc2) : cornerRadius;
+  };
+  arc2.padRadius = function(_) {
+    return arguments.length ? (padRadius = _ == null ? null : typeof _ === "function" ? _ : constant(+_), arc2) : padRadius;
+  };
+  arc2.startAngle = function(_) {
+    return arguments.length ? (startAngle = typeof _ === "function" ? _ : constant(+_), arc2) : startAngle;
+  };
+  arc2.endAngle = function(_) {
+    return arguments.length ? (endAngle = typeof _ === "function" ? _ : constant(+_), arc2) : endAngle;
+  };
+  arc2.padAngle = function(_) {
+    return arguments.length ? (padAngle = typeof _ === "function" ? _ : constant(+_), arc2) : padAngle;
+  };
+  arc2.context = function(_) {
+    return arguments.length ? (context = _ == null ? null : _, arc2) : context;
+  };
+  return arc2;
+}
+function array(x) {
+  return typeof x === "object" && "length" in x ? x : Array.from(x);
+}
+function descending(a, b) {
+  return b < a ? -1 : b > a ? 1 : b >= a ? 0 : NaN;
+}
+function identity(d) {
+  return d;
+}
+function pie() {
+  var value = identity, sortValues = descending, sort = null, startAngle = constant(0), endAngle = constant(tau), padAngle = constant(0);
+  function pie2(data) {
+    var i, n = (data = array(data)).length, j, k, sum = 0, index = new Array(n), arcs = new Array(n), a0 = +startAngle.apply(this, arguments), da2 = Math.min(tau, Math.max(-tau, endAngle.apply(this, arguments) - a0)), a1, p2 = Math.min(Math.abs(da2) / n, padAngle.apply(this, arguments)), pa = p2 * (da2 < 0 ? -1 : 1), v;
+    for (i = 0; i < n; ++i) {
+      if ((v = arcs[index[i] = i] = +value(data[i], i, data)) > 0) {
+        sum += v;
+      }
+    }
+    if (sortValues != null) index.sort(function(i2, j2) {
+      return sortValues(arcs[i2], arcs[j2]);
+    });
+    else if (sort != null) index.sort(function(i2, j2) {
+      return sort(data[i2], data[j2]);
+    });
+    for (i = 0, k = sum ? (da2 - n * pa) / sum : 0; i < n; ++i, a0 = a1) {
+      j = index[i], v = arcs[j], a1 = a0 + (v > 0 ? v * k : 0) + pa, arcs[j] = {
+        data: data[j],
+        index: i,
+        value: v,
+        startAngle: a0,
+        endAngle: a1,
+        padAngle: p2
+      };
+    }
+    return arcs;
+  }
+  pie2.value = function(_) {
+    return arguments.length ? (value = typeof _ === "function" ? _ : constant(+_), pie2) : value;
+  };
+  pie2.sortValues = function(_) {
+    return arguments.length ? (sortValues = _, sort = null, pie2) : sortValues;
+  };
+  pie2.sort = function(_) {
+    return arguments.length ? (sort = _, sortValues = null, pie2) : sort;
+  };
+  pie2.startAngle = function(_) {
+    return arguments.length ? (startAngle = typeof _ === "function" ? _ : constant(+_), pie2) : startAngle;
+  };
+  pie2.endAngle = function(_) {
+    return arguments.length ? (endAngle = typeof _ === "function" ? _ : constant(+_), pie2) : endAngle;
+  };
+  pie2.padAngle = function(_) {
+    return arguments.length ? (padAngle = typeof _ === "function" ? _ : constant(+_), pie2) : padAngle;
+  };
+  return pie2;
+}
 function Transform(k, x, y) {
   this.k = k;
   this.x = x;
@@ -10940,48 +11227,98 @@ Transform.prototype = {
 };
 Transform.prototype;
 const _hoisted_1 = { class: "chart-container" };
+const _hoisted_2 = { class: "chart-row" };
+const _hoisted_3 = { class: "project-list" };
+const _hoisted_4 = { class: "project-name" };
+const _hoisted_5 = { class: "project-time" };
+const _hoisted_6 = { class: "project-percent" };
 const _sfc_main$1 = /* @__PURE__ */ defineComponent({
   __name: "BarChart",
-  props: {
-    title: {}
-  },
   setup(__props) {
-    const props = __props;
-    const chart = ref(null);
-    const data = [
-      { name: "A", value: 30 },
-      { name: "B", value: 50 },
-      { name: "C", value: 20 },
-      { name: "D", value: 40 },
-      { name: "E", value: 60 }
+    const projectData = [
+      { name: "系统架构师", time: "0:00:17", percent: 54.8, color: "#a05d56" },
+      { name: "运动健康", time: "0:00:14", percent: 45.2, color: "#6b486b" }
     ];
-    const drawChart = () => {
+    const dailyData = [
+      { date: "Fri 15-11", totalTime: 8e-3 },
+      { date: "Sat 16-11", totalTime: 0 },
+      { date: "Sun 17-11", totalTime: 0 },
+      { date: "Mon 18-11", totalTime: 0 },
+      { date: "Tue 19-11", totalTime: 0 },
+      { date: "Wed 20-11", totalTime: 0 },
+      { date: "Thu 21-11", totalTime: 0 }
+    ];
+    const barChart = ref(null);
+    const donutChart = ref(null);
+    const drawBarChart = () => {
       const width = 400;
-      const height = 300;
-      const margin = { top: 50, right: 20, bottom: 30, left: 40 };
-      select(chart.value).selectAll("*").remove();
-      const svg = select(chart.value).append("svg").attr("width", width).attr("height", height);
-      const x = band().range([margin.left, width - margin.right]).padding(0.1);
-      const y = linear().range([height - margin.bottom, margin.top]);
-      x.domain(data.map((d) => d.name));
-      y.domain([0, max(data, (d) => d.value)]);
-      svg.append("g").attr("transform", `translate(0,${height - margin.bottom})`).call(axisBottom(x));
-      svg.append("g").attr("transform", `translate(${margin.left},0)`).call(axisLeft(y));
-      svg.selectAll("rect").data(data).enter().append("rect").attr("x", (d) => x(d.name)).attr("y", (d) => y(d.value)).attr("width", x.bandwidth()).attr("height", (d) => height - margin.bottom - y(d.value)).attr("fill", "#69b3a2");
-      svg.append("text").attr("x", width / 2).attr("y", margin.top / 2).attr("text-anchor", "middle").style("font-size", "16px").style("font-weight", "bold").text(props.title);
+      const height = 200;
+      const margin = { top: 20, right: 20, bottom: 40, left: 40 };
+      const svg = select(barChart.value).append("svg").attr("width", width).attr("height", height);
+      const x = band().domain(dailyData.map((d) => d.date)).range([margin.left, width - margin.right]).padding(0.1);
+      const y = linear().domain([0, 8e-3]).range([height - margin.bottom, margin.top]);
+      svg.append("g").attr("transform", `translate(0,${height - margin.bottom})`).call(axisBottom(x)).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-45)");
+      svg.append("g").attr("transform", `translate(${margin.left},0)`).call(axisLeft(y).ticks(5).tickFormat((d) => `${d} h`));
+      svg.append("g").attr("class", "grid").attr("transform", `translate(${margin.left},0)`).call(
+        axisLeft(y).ticks(5).tickSize(-width + margin.left + margin.right).tickFormat("")
+      );
+      svg.selectAll("rect").data(dailyData).enter().append("rect").attr("x", (d) => x(d.date) || 0).attr("y", (d) => y(d.totalTime)).attr("width", x.bandwidth()).attr("height", (d) => height - margin.bottom - y(d.totalTime)).attr("fill", "#a05d56");
     };
-    onMounted(drawChart);
+    const drawDonutChart = () => {
+      const width = 200;
+      const height = 200;
+      const radius = Math.min(width, height) / 2;
+      const svg = select(donutChart.value).append("svg").attr("width", width).attr("height", height).append("g").attr("transform", `translate(${width / 2},${height / 2})`);
+      const color2 = ordinal().domain(projectData.map((d) => d.name)).range(projectData.map((d) => d.color));
+      const pie$1 = pie().value((d) => d.percent);
+      const arc$1 = arc().innerRadius(radius * 0.6).outerRadius(radius);
+      const arcs = svg.selectAll("arc").data(pie$1(projectData)).enter().append("g").attr("class", "arc");
+      arcs.append("path").attr("d", arc$1).attr("fill", (d) => color2(d.data.name));
+    };
+    onMounted(() => {
+      drawBarChart();
+      drawDonutChart();
+    });
     return (_ctx, _cache) => {
       return openBlock(), createElementBlock("div", _hoisted_1, [
-        createBaseVNode("div", {
-          ref_key: "chart",
-          ref: chart
-        }, null, 512)
+        createBaseVNode("div", _hoisted_2, [
+          createBaseVNode("div", {
+            ref_key: "barChart",
+            ref: barChart,
+            class: "bar-chart"
+          }, null, 512),
+          createBaseVNode("div", {
+            ref_key: "donutChart",
+            ref: donutChart,
+            class: "donut-chart"
+          }, null, 512)
+        ]),
+        createBaseVNode("div", _hoisted_3, [
+          _cache[0] || (_cache[0] = createBaseVNode("div", { class: "list-header" }, [
+            createBaseVNode("span", null, "Project"),
+            createBaseVNode("span", null, "Time"),
+            createBaseVNode("span", null, "Percent")
+          ], -1)),
+          (openBlock(), createElementBlock(Fragment, null, renderList(projectData, (item, index) => {
+            return createBaseVNode("div", {
+              key: index,
+              class: "project-item"
+            }, [
+              createBaseVNode("span", {
+                class: "project-color",
+                style: normalizeStyle({ backgroundColor: item.color })
+              }, null, 4),
+              createBaseVNode("span", _hoisted_4, toDisplayString(item.name), 1),
+              createBaseVNode("span", _hoisted_5, toDisplayString(item.time), 1),
+              createBaseVNode("span", _hoisted_6, toDisplayString(item.percent.toFixed(1)) + "%", 1)
+            ]);
+          }), 64))
+        ])
       ]);
     };
   }
 });
-const BarChart = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-9f1463bb"]]);
+const BarChart = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-1b1311a6"]]);
 const _sfc_main = /* @__PURE__ */ defineComponent({
   __name: "TimerReportView",
   props: {
