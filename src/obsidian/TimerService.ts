@@ -137,7 +137,7 @@ export class TimerService {
             }
 
             if (isInTimeEntrySection) {
-                const match = line.match(/(\d{2}:\d{2}) - (\d{2}:\d{2}) (.*?)( #(\S+))?$/);
+                const match = line?.trimEnd().match(/(\d{2}:\d{2}) - (\d{2}:\d{2}) (.*?)( #(\S+))?$/);
                 if (match) {
                     const [, startTime, endTime, title, , tag] = match;
                     const entry: TimeEntry = {
