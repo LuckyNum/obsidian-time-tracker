@@ -136,7 +136,7 @@ export class TimerService {
                 continue;
             }
 
-            if (isInTimeEntrySection && line.startsWith(useTimerStore().settings.timeEntryPrefix)) {
+            if (isInTimeEntrySection) {
                 const match = line.match(/(\d{2}:\d{2}) - (\d{2}:\d{2}) (.*?)( #(\S+))?$/);
                 if (match) {
                     const [, startTime, endTime, title, , tag] = match;
