@@ -2,6 +2,8 @@ import {App, Plugin, PluginManifest, WorkspaceLeaf} from 'obsidian';
 import './global.css';
 import {TimerView, VIEW_TYPE_TIMER} from "@/views/TimerView.ts";
 import {TimerSettingTab} from "@/obsidian/TimerSetting.ts";
+import {CODEBLOCK_LANG} from "@/lib/constants.ts";
+import reportBlockHandler from "@/obsidian/TimerReportHandler.ts";
 
 export default class ObsidianTimeTrackerPlugin extends Plugin {
     constructor(app: App, manifest: PluginManifest) {
@@ -11,6 +13,7 @@ export default class ObsidianTimeTrackerPlugin extends Plugin {
     async onload(): Promise<void> {
         this.addSettingTab(new TimerSettingTab(this));
         this.registerTimerView();
+        this.registerCodeBlockProcessor();
         document.body.toggleClass('@container', true);
     }
 
@@ -23,6 +26,10 @@ export default class ObsidianTimeTrackerPlugin extends Plugin {
                 active: true,
             });
         });
+    }
+
+    private registerCodeBlockProcessor() {
+        this.registerMarkdownCodeBlockProcessor(CODEBLOCK_LANG, reportBlockHandler);
     }
 
     onunload() {

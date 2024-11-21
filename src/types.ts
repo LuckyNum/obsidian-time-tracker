@@ -31,3 +31,54 @@ export const COLORS = [
         '#F06292', '#FFA07A', '#4FC3F7', '#4DB6AC', '#FF6B6B',
     ]
 ;
+
+export enum Keyword {
+    // query type keywords
+    SUMMARY = "SUMMARY",
+    LIST = "LIST",
+
+    // query time interval keywords
+    TODAY = "TODAY",
+    WEEK = "WEEK",
+    MONTH = "MONTH",
+    PAST = "PAST",
+    DAYS = "DAYS",
+    WEEKS = "WEEKS",
+    MONTHS = "MONTHS",
+    FROM = "FROM",
+    TO = "TO",
+
+    // inclusion/exclusion keywords
+    INCLUDE = "INCLUDE",
+    EXCLUDE = "EXCLUDE",
+    PROJECTS = "PROJECTS",
+    CLIENTS = "CLIENTS",
+    TAGS = "TAGS",
+
+    // Group lists by
+    GROUP = "GROUP",
+    BY = "BY",
+    DATE = "DATE",
+    PROJECT = "PROJECT",
+    CLIENT = "CLIENT",
+
+    // Sort lists by
+    SORT = "SORT",
+    ASC = "ASC",
+    DESC = "DESC",
+
+    // Customize report
+    TITLE = "TITLE",
+}
+
+/**
+ * User input token in the form of a string or integer.
+ */
+export type UserInput = string | number;
+
+/**
+ * A query language token. Can be a Keyword or a UserInput
+ */
+export type Token = Keyword | UserInput;
+
+export const ISODateFormat = "YYYY-MM-DD";

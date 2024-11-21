@@ -1,6 +1,6 @@
 import {IconName, ItemView, WorkspaceLeaf, Plugin} from 'obsidian';
 import {createApp, App} from 'vue';
-import TimerComponent from '@/views/TimerComponent.vue';
+import TimerComponent from '@/views/TimerRecordView.vue';
 import {createPinia} from "pinia";
 import {TimerService} from "@/obsidian/TimerService.ts";
 import {useTimerStore} from "@/store/TimerStore.ts";

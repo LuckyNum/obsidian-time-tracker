@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {defineProps} from 'vue';
+import {defineProps, onMounted} from 'vue';
 import {storeToRefs} from 'pinia';
 import {Play, Pause} from 'lucide-vue-next';
 import {useTimerStore} from '@/store/TimerStore';
@@ -248,8 +248,6 @@ const toggleTimer = async () => {
     align-items: center;
     padding: 8px;
     border-radius: 4px;
-    background-color: var(--background-secondary);
-    transition: background-color 0.2s ease;
     overflow: hidden; /* Ensure no content spills out */
 }
 
