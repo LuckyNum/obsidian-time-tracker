@@ -1,13 +1,35 @@
-import {Plugin, TFile, Modal, Setting, Notice} from 'obsidian';
-import {COLORS, TimeEntry} from "@/types.ts";
+import {Modal, Notice, Plugin, Setting} from 'obsidian';
+import {DailyTask, TimeEntry} from "@/types.ts";
 import {useTimerStore} from "@/store/TimerStore.ts";
 import {t} from "@/i18n/helpers.ts";
+import {COLORS} from "@/lib/constants.ts";
+import confetti from "canvas-confetti";
 
 export class TimerService {
     plugin: Plugin;
 
     constructor(plugin: Plugin) {
         this.plugin = plugin;
+    }
+
+    async toggleTimer() {
+        if (useTimerStore().activeEntry) {
+            const created = await useTimerStore().stopTimer();
+            if (created) {
+                if (useTimerStore().settings.enableCelebration) {
+                    confetti({
+                        particleCount: 100,
+                        spread: 80,
+                        origin: {y: 0.8}
+                    });
+                }
+            }
+        } else {
+            const result = await this.showNewEntryDialog();
+            if (result) {
+                await useTimerStore().startTimer(result.title, result.tag);
+            }
+        }
     }
 
     async showNewEntryDialog(): Promise<{ title: string; tag: string } | null> {
@@ -78,16 +100,15 @@ export class TimerService {
     }
 
     async addTimeEntryToDailyNote(entry: TimeEntry): Promise<Boolean> {
-        const fileName = window.moment(entry.startTime).format('YYYY-MM-DD');
-        const filePath = `${useTimerStore().settings.dailyNotesFolder}/${fileName}.md`;
+        // @ts-ignore
+        const dailyNotesSettings = await this.plugin.app.internalPlugins.getPluginById('daily-notes').instance.options;
+        const filePath = `${dailyNotesSettings.folder}/${window.moment().format(dailyNotesSettings.format)}.md`
+        const isExist = await this.plugin.app.vault.adapter.exists(filePath);
 
-        let file = this.plugin.app.vault.getAbstractFileByPath(filePath) as TFile;
-        if (!file) {
+        if (!isExist) {
             if (useTimerStore().settings.enableCreateNote) {
-                file = await this.plugin.app.vault.create(
-                    filePath,
-                    `${useTimerStore().settings.timeEntryHeading}\n`
-                );
+                await this.plugin.app.vault.adapter.mkdir(filePath.substring(0, filePath.lastIndexOf("/")));
+                await this.plugin.app.vault.adapter.write(filePath, `${useTimerStore().settings.timeEntryHeading}\n`);
             } else {
                 this.notice(t('createNoteFirst'));
                 return false;
@@ -99,16 +120,21 @@ export class TimerService {
         const tagStr = entry.tag ? ` #${entry.tag}` : '';
         const newEntryText = `${useTimerStore().settings.timeEntryPrefix} ${startTimeStr} - ${endTimeStr} ${entry.title}${tagStr}`;
 
-        const content = await this.plugin.app.vault.read(file);
+        const content = await this.plugin.app.vault.adapter.read(filePath);
         const lines = content.split('\n');
 
         const headingIndex = lines.findIndex(line => line.trim() === useTimerStore().settings.timeEntryHeading);
         if (headingIndex !== -1) {
-            let insertIndex = headingIndex + 1;
-            while (insertIndex < lines.length &&
-            lines[insertIndex].startsWith(useTimerStore().settings.timeEntryPrefix)) {
-                insertIndex++;
+            let insertIndex;
+            if (useTimerStore().settings.isFirstLine) {
+                insertIndex = headingIndex + 1;
+            } else {
+                insertIndex = headingIndex + 1;
+                while (insertIndex < lines.length && lines[insertIndex].startsWith("-")) {
+                    insertIndex++;
+                }
             }
+
             lines.splice(insertIndex, 0, newEntryText);
         } else {
             lines.push('', useTimerStore().settings.timeEntryHeading, newEntryText);
@@ -119,13 +145,33 @@ export class TimerService {
     }
 
     async getTodayEntries(): Promise<TimeEntry[]> {
-        const filePath = this.getTodayNote();
-        const file = this.plugin.app.vault.getAbstractFileByPath(filePath) as TFile;
-        if (!file) {
+        // @ts-ignore
+        const dailyNotesSettings = await this.plugin.app.internalPlugins.getPluginById('daily-notes').instance.options;
+        const filePath = `${dailyNotesSettings.folder}/${window.moment().format(dailyNotesSettings.format)}.md`
+        return await this.getOneDayEntries(filePath);
+    }
+
+    async getRecent7DayEntries(): Promise<DailyTask[]> {
+        // @ts-ignore
+        const dailyNotesSettings = await this.plugin.app.internalPlugins.getPluginById('daily-notes').instance.options;
+        const result: DailyTask[] = [];
+        for (let i = 0; i < 7; i++) {
+            const filePath = `${dailyNotesSettings.folder}/${window.moment().subtract(i, 'days').format(dailyNotesSettings.format)}.md`;
+            const timeEntries = await this.getOneDayEntries(filePath);
+            result.push({
+                date: window.moment().subtract(i, 'days').format("YYYY-MM-DD"),
+                tasks: timeEntries
+            });
+        }
+        return result;
+    }
+
+    async getOneDayEntries(filePath: string): Promise<TimeEntry[]> {
+        const isExist = await this.plugin.app.vault.adapter.exists(filePath);
+        if (!isExist) {
             return [];
         }
-
-        const content = await this.plugin.app.vault.read(file);
+        const content = await this.plugin.app.vault.adapter.read(filePath);
         const lines = content.split('\n');
         const entries: TimeEntry[] = [];
         let isInTimeEntrySection = false;
@@ -154,10 +200,6 @@ export class TimerService {
             }
         }
         return entries;
-    }
-
-    getTodayNote(): string {
-        return `${useTimerStore().settings.dailyNotesFolder}/${window.moment().format('YYYY-MM-DD')}.md`;
     }
 
     notice(message: string) {

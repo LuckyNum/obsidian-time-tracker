@@ -1,5 +1,4 @@
 import discard from 'postcss-discard';
-import tailwindcss from 'tailwindcss';
 import autoprefixer from 'autoprefixer';
 import prefixer from 'postcss-prefix-selector';
 
@@ -41,7 +40,6 @@ mediaToContainer.postcss = true;
 /** @type {import('postcss-load-config').Config} */
 export default {
   plugins: [
-    tailwindcss,
     autoprefixer,
     prefixer({
       prefix: '.custom-next',

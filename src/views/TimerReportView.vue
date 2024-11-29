@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import {defineProps, onMounted} from "vue";
+import {defineProps, onMounted,} from "vue";
 import {MarkdownPostProcessorContext, moment} from "obsidian";
-import {ISODateFormat, Keyword, Token} from "@/types.ts";
-import BarChart from "@/views/BarChart.vue";
+import {Keyword, Token} from "@/types.ts";
+import SummaryReport from "@/views/SummaryReport.vue";
+import {ISODateFormat} from "@/lib/constants.ts";
 
 const props = defineProps<{
     source: string,
+    el: HTMLElement,
     ctx: MarkdownPostProcessorContext
 }>();
 
@@ -15,10 +17,7 @@ onMounted(async () => {
 
 function parseQuery(source: string) {
     const tokens = tokenize(source);
-    console.log(tokens)
-    const title = getTitle(tokens);
-    console.log(title)
-    return title
+    return getTitle(tokens)
 }
 
 function tokenize(query: string): Token[] {
@@ -86,9 +85,13 @@ function getTitle(tokens: Token[]): string {
 </script>
 
 <template>
-    <BarChart :title="parseQuery(props.source)"></BarChart>
+    <div class="container">
+        <SummaryReport></SummaryReport>
+    </div>
 </template>
 
 <style scoped>
-
+.container {
+    white-space: normal;
+}
 </style>

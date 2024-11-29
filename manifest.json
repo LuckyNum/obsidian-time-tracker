@@ -2,7 +2,7 @@
   "id": "obsidian-time-tracker",
   "name": "Obsidian Time Tracker",
   "description": "A plugin to track the time spent on your notes and tasks within Obsidian.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "LuckyNum",
   "authorUrl": "https://github.com/LuckyNum/obsidian-time-tracker",
   "isDesktopOnly": false,

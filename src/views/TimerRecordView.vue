@@ -1,19 +1,18 @@
 <script setup lang="ts">
-import {defineProps, onMounted} from 'vue';
+import {defineProps} from 'vue';
 import {storeToRefs} from 'pinia';
 import {Play, Pause} from 'lucide-vue-next';
 import {useTimerStore} from '@/store/TimerStore';
-import type {TimerService} from '@/obsidian/TimerService';
-import confetti from 'canvas-confetti';
-import {COLORS} from "@/types.ts";
+import type {TimerService} from '@/obsidian/TimerService.ts';
 import {t} from '@/i18n/helpers.ts'
+import {COLORS} from "@/lib/constants.ts";
 
 const props = defineProps<{
     timerService: TimerService
 }>();
 
 const timerStore = useTimerStore();
-const {entries, activeEntry, totalDuration, totalDurationNoActive, settings} = storeToRefs(timerStore);
+const {entries, activeEntry, totalDuration, totalDurationNoActive} = storeToRefs(timerStore);
 
 const getEntryColor = (index: number) => {
     return COLORS[index % COLORS.length];
@@ -38,26 +37,6 @@ const formatEntryTime = (seconds: number): string => {
     const minutes = Math.floor((seconds % 3600) / 60);
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 };
-
-const toggleTimer = async () => {
-    if (activeEntry.value) {
-        const created = await timerStore.stopTimer();
-        if (created) {
-            if (settings.value.enableCelebration) {
-                confetti({
-                    particleCount: 100,
-                    spread: 80,
-                    origin: {y: 0.8}
-                });
-            }
-        }
-    } else {
-        const result = await props.timerService.showNewEntryDialog();
-        if (result) {
-            await timerStore.startTimer(result.title, result.tag);
-        }
-    }
-};
 </script>
 
 <template>
@@ -78,7 +57,7 @@ const toggleTimer = async () => {
                 </p>
             </div>
             <button
-                @click="toggleTimer"
+                @click="props.timerService.toggleTimer"
                 class="timer-button"
                 :class="{ 'active': activeEntry }"
             >
@@ -131,7 +110,7 @@ const toggleTimer = async () => {
 
 <style scoped>
 .timer-container {
-    padding: 16px 16px 0px 16px;
+    padding: 16px 16px 0 16px;
     background-color: transparent;
     position: relative;
     overflow: hidden;

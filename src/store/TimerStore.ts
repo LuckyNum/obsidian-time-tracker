@@ -1,15 +1,17 @@
 import {defineStore} from 'pinia';
-import {COLORS, DEFAULT_SETTINGS, TimeEntry, TimerPluginSettings} from "@/types.ts";
+import {DailyTask, TimeEntry, TimerPluginSettings} from "@/types.ts";
 import type {TimerService} from '@/obsidian/TimerService.ts';
-import {Plugin} from 'obsidian'
 import {t} from "@/i18n/helpers.ts";
+import {COLORS, DEFAULT_SETTINGS} from "@/lib/constants.ts";
+import ObsidianTimeTrackerPlugin from "@/index.ts";
 
 export const useTimerStore = defineStore('timerStore', {
     state: () => ({
         entries: [] as TimeEntry[],
+        sevenDayEntries: [] as DailyTask[],
         activeEntry: null as TimeEntry | null,
         timerService: null as TimerService | null,
-        settings: DEFAULT_SETTINGS as TimerPluginSettings
+        settings: DEFAULT_SETTINGS as TimerPluginSettings,
     }),
     getters: {
         totalDuration: (state) =>
@@ -18,13 +20,11 @@ export const useTimerStore = defineStore('timerStore', {
             state.entries.reduce((acc, entry) => acc + entry.duration, 0),
     },
     actions: {
-        setEntries(entries: TimeEntry[]) {
-            this.entries = entries;
-        },
-        async init(service: TimerService, plugin: Plugin): Promise<void> {
-            this.timerService = service;
+        async init(plugin: ObsidianTimeTrackerPlugin): Promise<void> {
+            this.timerService = plugin.timerService;
             this.settings = Object.assign({}, DEFAULT_SETTINGS, await plugin.loadData());
-            await this.refreshToday();
+            this.entries = await this.timerService.getTodayEntries();
+            this.sevenDayEntries = await this.timerService.getRecent7DayEntries();
         },
         async refreshToday() {
             if (this.timerService) {
@@ -37,6 +37,7 @@ export const useTimerStore = defineStore('timerStore', {
                 title,
                 tag,
                 startTime: Date.now(),
+                endTime: 0,
                 duration: 0,
                 color: COLORS[(this.entries.length + 1) % COLORS.length],
             };
@@ -55,11 +56,10 @@ export const useTimerStore = defineStore('timerStore', {
                 if (duration < 60) {
                     this.timerService?.notice(t('cantAdd'));
                     this.activeEntry = null;
-                    await this.refreshToday();
                 } else {
                     const created = await this.timerService?.addTimeEntryToDailyNote(newEntry);
                     this.activeEntry = null;
-                    await this.refreshToday();
+                    this.entries = this.timerService ? await this.timerService.getTodayEntries() : [];
                     if (created) {
                         return true;
                     }

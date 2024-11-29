@@ -21,14 +21,13 @@ export class TimerSettingTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName(t('settingDailyNoteFolder'))
-            .setDesc(t('settingDailyNoteFolderDesc'))
-            .addText(text => text
-                .setPlaceholder('Daily Notes')
-                .setValue(timerStore.settings.dailyNotesFolder)
-                .onChange(async (value) => {
-                    timerStore.settings.dailyNotesFolder = value;
-                    await this.plugin.saveData(timerStore.settings);
-                }));
+            .setDesc(
+                t('settingDailyNoteFolderDesc')
+                    // @ts-ignore
+                    .concat('当前格式为[', this.plugin.app.internalPlugins.getPluginById('daily-notes').instance.options.format, ']，目录为[', this.plugin.app.internalPlugins.getPluginById('daily-notes').instance.options.folder, ']。')
+                    // @ts-ignore
+                    .concat(`今日日记路径：${this.plugin.app.internalPlugins.getPluginById('daily-notes').instance.options.folder}/${window.moment().format(this.plugin.app.internalPlugins.getPluginById('daily-notes').instance.options.format)}`))
+
 
         new Setting(containerEl)
             .setName(t('settingDailyNoteHeading'))
@@ -53,6 +52,16 @@ export class TimerSettingTab extends PluginSettingTab {
                         timerStore.settings.timeEntryPrefix = value;
                         await this.plugin.saveData(timerStore.settings);
                     }
+                }));
+
+        new Setting(containerEl)
+            .setName('首行/末行')
+            .setDesc('首行/末行')
+            .addToggle(toggle => toggle
+                .setValue(timerStore.settings.isFirstLine)
+                .onChange(async (value) => {
+                    timerStore.settings.isFirstLine = value;
+                    await this.plugin.saveData(timerStore.settings);
                 }));
 
         new Setting(containerEl)
