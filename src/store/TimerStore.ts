@@ -1,5 +1,5 @@
 import {defineStore} from 'pinia';
-import {DailyTask, TimeEntry, TimerPluginSettings} from "@/types.ts";
+import {DailyTask, PresetItem, TimeEntry, TimerPluginSettings} from "@/types.ts";
 import type {TimerService} from '@/obsidian/TimerService.ts';
 import {t} from "@/i18n/helpers.ts";
 import {COLORS, DEFAULT_SETTINGS} from "@/lib/constants.ts";
@@ -12,6 +12,7 @@ export const useTimerStore = defineStore('timerStore', {
         activeEntry: null as TimeEntry | null,
         timerService: null as TimerService | null,
         settings: DEFAULT_SETTINGS as TimerPluginSettings,
+        presetItems: [] as PresetItem[],
     }),
     getters: {
         totalDuration: (state) =>
@@ -25,6 +26,7 @@ export const useTimerStore = defineStore('timerStore', {
             this.settings = Object.assign({}, DEFAULT_SETTINGS, await plugin.loadData());
             this.entries = await this.timerService.getTodayEntries();
             this.sevenDayEntries = await this.timerService.getRecent7DayEntries();
+            this.presetItems = this.settings.presetItems || [];
         },
         async refreshToday() {
             if (this.timerService) {

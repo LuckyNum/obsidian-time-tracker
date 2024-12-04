@@ -8,7 +8,8 @@ export const DEFAULT_SETTINGS: TimerPluginSettings = {
     timeEntryPrefix: '- [ ]',
     isFirstLine: false,
     enableCelebration: true,
-    enableCreateNote: false
+    enableCreateNote: false,
+    presetItems: []
 };
 
 export const COLORS = [

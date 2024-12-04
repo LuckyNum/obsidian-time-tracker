@@ -1,14 +1,18 @@
-import {Modal, Notice, Plugin, Setting} from 'obsidian';
-import {DailyTask, TimeEntry} from "@/types.ts";
+import {Modal, Notice} from 'obsidian';
+import {DailyTask, PresetItem, TimeEntry} from "@/types.ts";
 import {useTimerStore} from "@/store/TimerStore.ts";
 import {t} from "@/i18n/helpers.ts";
 import {COLORS} from "@/lib/constants.ts";
 import confetti from "canvas-confetti";
+import ObsidianTimeTrackerPlugin from "@/index.ts";
+import {createApp} from "vue";
+import PresetItemDialog from "@/components/PresetItemDialog.vue";
+import StartTimerDialog from "@/components/StartTimerDialog.vue";
 
 export class TimerService {
-    plugin: Plugin;
+    plugin: ObsidianTimeTrackerPlugin;
 
-    constructor(plugin: Plugin) {
+    constructor(plugin: ObsidianTimeTrackerPlugin) {
         this.plugin = plugin;
     }
 
@@ -25,78 +29,47 @@ export class TimerService {
                 }
             }
         } else {
-            const result = await this.showNewEntryDialog();
-            if (result) {
-                await useTimerStore().startTimer(result.title, result.tag);
-            }
+            this.showStartTimerDialog();
         }
     }
 
-    async showNewEntryDialog(): Promise<{ title: string; tag: string } | null> {
-        return new Promise((resolve) => {
-            const modal = new Modal(this.plugin.app);
-            let title = '';
-            let tag = '';
+    showStartTimerDialog() {
+        const modal = new Modal(this.plugin.app);
+        modal.containerEl.addClass('start-timer-modal');
+        modal.containerEl.toggleClass('custom-next', true);
+        modal.titleEl.setText('开始做');
 
-            modal.titleEl.setText('新建事项');
-
-            new Setting(modal.contentEl)
-                .setName('事项')
-                .addText(text => text
-                    .setPlaceholder('你在做什么？')
-                    .onChange(value => {
-                        title = value;
-                    }));
-
-            new Setting(modal.contentEl)
-                .setName('标签')
-                .addDropdown(dropdown => {
-                    dropdown.addOption('', '无标签');
-                    const tags = this.getTags();
-                    tags.forEach(tag => {
-                        dropdown.addOption(tag, tag);
-                    });
-                    dropdown.addOption('create-new', '创建新标签...');
-                    dropdown.onChange(value => {
-                        if (value === 'create-new') {
-                            const createTagModal = new Modal(this.plugin.app);
-                            createTagModal.titleEl.setText('创建新标签');
-                            new Setting(createTagModal.contentEl)
-                                .setName('新标签')
-                                .addText(text => text
-                                    .setPlaceholder('输入新标签')
-                                    .onChange(newTag => {
-                                        tag = newTag;
-                                    }));
-                            new Setting(createTagModal.contentEl)
-                                .addButton(btn => btn
-                                    .setButtonText('创建')
-                                    .onClick(() => {
-                                        if (tag) {
-                                            dropdown.addOption(tag, tag);
-                                            dropdown.setValue(tag);
-                                            createTagModal.close();
-                                        }
-                                    }));
-                            createTagModal.open();
-                        } else {
-                            tag = value;
-                        }
-                    });
-                });
-
-            new Setting(modal.contentEl)
-                .addButton(btn => btn
-                    .setButtonText('开始计时')
-                    .onClick(() => {
-                        if (title) {
-                            modal.close();
-                            resolve({title, tag});
-                        }
-                    }));
-
-            modal.open();
+        const vueApp = createApp(StartTimerDialog, {
+            timerService: this,
+            modal: modal
         });
+
+        vueApp.mount(modal.contentEl);
+
+        modal.onClose = () => {
+            vueApp.unmount();
+        };
+
+        modal.open();
+    }
+
+    showPresetItemDialog(): void {
+        const modal = new Modal(this.plugin.app);
+        modal.containerEl.addClass('preset-item-modal');
+        modal.containerEl.toggleClass('custom-next', true);
+        modal.titleEl.setText('预置事项');
+
+        const vueApp = createApp(PresetItemDialog, {
+            timerService: this
+        });
+
+        vueApp.mount(modal.contentEl);
+
+        modal.onClose = () => {
+            vueApp.unmount();
+        };
+
+        modal.open();
     }
 
     async addTimeEntryToDailyNote(entry: TimeEntry): Promise<Boolean> {
@@ -202,13 +175,25 @@ export class TimerService {
         return entries;
     }
 
+    async addPresetItem(item: PresetItem): Promise<void> {
+        useTimerStore().presetItems.push(item);
+        useTimerStore().settings.presetItems = useTimerStore().presetItems;
+        await this.plugin.saveData(useTimerStore().settings);
+    }
+
+    async removePresetItem(index: number): Promise<void> {
+        useTimerStore().presetItems.splice(index, 1);
+        useTimerStore().settings.presetItems = useTimerStore().presetItems;
+        await this.plugin.saveData(useTimerStore().settings);
+    }
+
     notice(message: string) {
         new Notice(message);
     }
 
-    private getTags(): string[] {
+    async getTags(): Promise<string[]> {
         // @ts-ignore
-        const tags = this.plugin.app.metadataCache.getTags();
+        const tags = await this.plugin.app.metadataCache.getTags();
         return Object.keys(tags).map(tag => tag.slice(1));
     }
 }

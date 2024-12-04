@@ -23,4 +23,7 @@ export default {
     settingEnableCreateNoteFirst: 'Enable Create Daily Note',
     settingEnableCreateNoteFirstDesc: 'Enable Create Daily Note',
     createNoteFirst: 'Please create daily note first',
+    presetItemTitlePlaceholder: '',
+    existingPresetItems: '',
+    remove: '',
 };

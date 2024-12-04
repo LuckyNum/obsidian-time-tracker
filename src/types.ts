@@ -8,6 +8,11 @@ export interface TimeEntry {
     color: string;
 }
 
+export interface PresetItem {
+    title: string;
+    tag: string;
+}
+
 export interface TimerPluginSettings {
     dailyNotesFolder: string;
     timeEntryHeading: string;
@@ -15,6 +20,7 @@ export interface TimerPluginSettings {
     isFirstLine: boolean;
     enableCelebration: boolean;
     enableCreateNote: boolean;
+    presetItems: PresetItem[];
 }
 
 export enum Keyword {

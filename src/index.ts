@@ -43,6 +43,8 @@ export default class ObsidianTimeTrackerPlugin extends Plugin {
         // 注册命令
         this.registerTimerCommand();
 
+        this.initTimerView();
+
         document.body.toggleClass('@container', true);
     }
 
@@ -51,6 +53,16 @@ export default class ObsidianTimeTrackerPlugin extends Plugin {
         this.addRibbonIcon('clock', 'Open Clock View', async () => {
             this.app.workspace.detachLeavesOfType(VIEW_TYPE_TIMER);
             await this.app.workspace.getRightLeaf(false)?.setViewState({
+                type: VIEW_TYPE_TIMER,
+                active: true,
+            });
+        });
+    }
+
+    private initTimerView() {
+        this.app.workspace.onLayoutReady(() => {
+            this.app.workspace.detachLeavesOfType(VIEW_TYPE_TIMER);
+            this.app.workspace.getRightLeaf(false)?.setViewState({
                 type: VIEW_TYPE_TIMER,
                 active: true,
             });
@@ -69,7 +81,6 @@ export default class ObsidianTimeTrackerPlugin extends Plugin {
             vueApp.mount(el);
         });
     }
-
 
     private registerTimerEvent() {
         // 监听文件修改事件
@@ -115,10 +126,33 @@ export default class ObsidianTimeTrackerPlugin extends Plugin {
             id: "time-tracker-stop-timer",
             name: "停止计时",
         });
+        // open timer command
+        this.addCommand({
+            checkCallback: (checking: boolean) => {
+                if (!checking) {
+                    this.app.workspace.detachLeavesOfType(VIEW_TYPE_TIMER);
+                    const leaf = this.app.workspace.getRightLeaf(false);
+                    if (leaf) {
+                        leaf.setViewState({
+                            type: VIEW_TYPE_TIMER,
+                            active: true,
+                        }).then(() => {
+                            this.app.workspace.revealLeaf(leaf);
+                        });
+                    }
+                } else {
+                    return true;
+                }
+            },
+            icon: "clock",
+            id: "time-tracker-open-timer",
+            name: "打开计时器",
+        });
     }
 
     onunload() {
         super.onunload();
+        this.app.workspace.detachLeavesOfType(VIEW_TYPE_TIMER);
         document.body.toggleClass('@container', false);
     }
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {defineProps} from 'vue';
 import {storeToRefs} from 'pinia';
-import {Play, Pause} from 'lucide-vue-next';
+import {Play, Pause, Settings} from 'lucide-vue-next';
 import {useTimerStore} from '@/store/TimerStore';
 import type {TimerService} from '@/obsidian/TimerService.ts';
 import {t} from '@/i18n/helpers.ts'
@@ -37,6 +37,10 @@ const formatEntryTime = (seconds: number): string => {
     const minutes = Math.floor((seconds % 3600) / 60);
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 };
+
+const openPresetItemDialog = () => {
+    props.timerService.showPresetItemDialog();
+};
 </script>
 
 <template>
@@ -68,7 +72,15 @@ const formatEntryTime = (seconds: number): string => {
 
         <div class="timer-summary">
             <div class="timer-summary-header">
-                <h3 class="timer-summary-title">{{ t('today') }}</h3>
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <h3 class="timer-summary-title">
+                        {{ t('today') }}
+                    </h3>
+                    <div @click="openPresetItemDialog()" class="clickable-icon extra-setting-button"
+                         aria-label="预置事项">
+                        <Settings class="svg-icon"/>
+                    </div>
+                </div>
                 <span class="timer-summary-total">{{ formatTotalTime(totalDuration) }}</span>
             </div>
 
@@ -193,7 +205,7 @@ const formatEntryTime = (seconds: number): string => {
     font-size: 20px;
     font-weight: 600;
     color: var(--text-normal);
-    margin: 0;
+    margin: 0 5px 0 0;
 }
 
 .timer-summary-total {

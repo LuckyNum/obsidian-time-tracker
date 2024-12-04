@@ -22,5 +22,8 @@ export default {
     settingEnableCelebrationDesc: '完成任务时显示彩屑动画',
     settingEnableCreateNoteFirst: '自动创建日记',
     settingEnableCreateNoteFirstDesc: '开启后，如果不存在日记文件则自动创建。如果日记有模板，不要开启此功能！！！',
-    createNoteFirst: '请先创建日记'
+    createNoteFirst: '请先创建日记',
+    presetItemTitlePlaceholder: '',
+    existingPresetItems: '',
+    remove: '删除',
 };
