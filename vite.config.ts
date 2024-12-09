@@ -6,14 +6,12 @@ import terser, { Options } from '@rollup/plugin-terser';
 import replace from '@rollup/plugin-replace';
 import resolve from '@rollup/plugin-node-resolve';
 
-// https://vite.dev/config/
 export default defineConfig(({ command, mode }) => {
   return {
     plugins: [vue()],
     build: {
       sourcemap: command !== "build" || mode === "development",
       minify: command === "build" && mode !== "development",
-      // Use Vite lib mode https://vitejs.dev/guide/build.html#library-mode
       lib: {
         entry: path.resolve(__dirname, "./src/index.ts"),
         formats: ["cjs"],
@@ -81,9 +79,7 @@ export default defineConfig(({ command, mode }) => {
           "@lezer/lr",
         ],
       },
-      // Use root as the output dir
       emptyOutDir: false,
-      // outDir: outputDir,
       outDir: ".",
     },
     resolve: {
