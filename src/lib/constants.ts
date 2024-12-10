@@ -1,4 +1,4 @@
-import {TimerPluginSettings} from "@/types.ts";
+import {Query, QueryType, TimerPluginSettings} from "@/types.ts";
 
 export const CODEBLOCK_LANG = "time-tracker";
 
@@ -10,6 +10,12 @@ export const DEFAULT_SETTINGS: TimerPluginSettings = {
     enableCelebration: true,
     enableCreateNote: false,
     presetItems: []
+};
+
+export const DEFAULT_QUERY: Query = {
+    from: '',
+    to: '',
+    type: QueryType.SUMMARY,
 };
 
 export const COLORS = [

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, onBeforeUnmount, onMounted, ref} from "vue";
+import {computed, defineProps, onBeforeUnmount, onMounted, ref} from "vue";
 import DonutChart from "@/components/DonutChart.vue";
 import BarChart from "@/components/BarChart.vue";
 import ProjectSummaryList from "@/components/ProjectSummaryList.vue";
@@ -8,6 +8,10 @@ import {moment} from "obsidian";
 import {minuteToTimeString, secondsToTimeString} from '@/lib/utils.ts'
 import {useTimerStore} from "@/store/TimerStore.ts";
 import {COLORS} from "@/lib/constants.ts";
+
+const props = defineProps<{
+    title: string,
+}>();
 
 const widthElement = ref(null);
 const width = ref(0);
@@ -102,6 +106,7 @@ function getListData(): ProjectSummaryItem[] {
 </script>
 
 <template>
+    <span class="summary-header">{{ props.title }}</span>
     <div ref="widthElement" class="summary-container">
         <BarChart v-if="barWidth && getBarData()" :data="getBarData()" :width="barWidth"/>
         <DonutChart
@@ -118,5 +123,9 @@ function getListData(): ProjectSummaryItem[] {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+.summary-header {
+    font-weight: 600;
+    font-size: 1.25rem;
 }
 </style>
