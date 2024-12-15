@@ -47,7 +47,7 @@ export default class ObsidianTimeTrackerPlugin extends Plugin {
         document.body.toggleClass('@container', true);
 
         // 创建索引器实例
-        this.indexer = new ObsidianDirectoryIndexer(this, "Daily Notes");
+        this.indexer = new ObsidianDirectoryIndexer(this);
 
         // 运行索引初始化
         if (!this.app.workspace.layoutReady) {

@@ -140,8 +140,8 @@ export interface FileMetadata {
     path: string;
     mtime: number;
     frontmatter?: any;
-    tags: string[];
-    links: string[];
+    tags?: string[];
+    links?: string[];
     content?: string;
     headers?: string[];
     timeEntry?: TimeEntry[];

@@ -1,4 +1,4 @@
-import {TFile, CachedMetadata, Component} from 'obsidian';
+import {TFile, Component} from 'obsidian';
 import {FileMetadata, TimeEntry} from "@/types.ts";
 import {useTimerStore} from "@/store/TimerStore.ts";
 import {COLORS} from "@/lib/constants.ts";
@@ -7,16 +7,13 @@ import ObsidianTimeTrackerPlugin from "@/index.ts";
 export class ObsidianDirectoryIndexer extends Component {
     //@ts-ignore
     private initialized: boolean;
-    private rootPath: string;
     private store;
 
     constructor(
         private plugin: ObsidianTimeTrackerPlugin,
-        rootPath: string = "/"
     ) {
         super();
         this.initialized = false;
-        this.rootPath = rootPath;
         this.store = useTimerStore();
     }
 
@@ -25,7 +22,7 @@ export class ObsidianDirectoryIndexer extends Component {
      */
     public async initialize(): Promise<void> {
         try {
-            this.plugin.addStatusBarItem().setText(`开始初始化目录: ${this.rootPath}`)
+            this.plugin.addStatusBarItem().setText(`开始初始化目录: ${useTimerStore().dailyNotesSettings?.folder}`)
             const startTime = Date.now();
             // 初始化事件监听器
             this.registerEventHandlers();
@@ -108,16 +105,10 @@ export class ObsidianDirectoryIndexer extends Component {
      */
     private async indexFile(file: TFile): Promise<void> {
         try {
-            const metadata = this.plugin.app.metadataCache.getFileCache(file);
             const content = await this.plugin.app.vault.read(file);
             const fileMetadata: FileMetadata = {
                 path: file.path,
                 mtime: file.stat.mtime,
-                tags: this.extractTags(metadata),
-                links: this.extractLinks(metadata),
-                content: content,
-                frontmatter: metadata?.frontmatter,
-                headers: this.extractHeaders(metadata),
                 timeEntry: this.extractTimeEntry(content)
             };
             this.store.allEntries.set(file.path, fileMetadata);
@@ -159,93 +150,13 @@ export class ObsidianDirectoryIndexer extends Component {
     }
 
     /**
-     * 提取标签
-     */
-    private extractTags(metadata: CachedMetadata | null): string[] {
-        const tags: Set<string> = new Set();
-        // 从 frontmatter 中提取标签
-        if (metadata?.frontmatter?.tags) {
-            const frontmatterTags = Array.isArray(metadata.frontmatter.tags)
-                ? metadata.frontmatter.tags
-                : [metadata.frontmatter.tags];
-            frontmatterTags.forEach(tag => tags.add(tag));
-        }
-        // 从内联标签中提取
-        if (metadata?.tags) {
-            metadata.tags.forEach(tag => tags.add(tag.tag));
-        }
-        return Array.from(tags);
-    }
-
-    /**
-     * 提取链接
-     */
-    private extractLinks(metadata: CachedMetadata | null): string[] {
-        if (!metadata?.links) return [];
-
-        return metadata.links.map(link => {
-            const dest = this.plugin.app.metadataCache.getFirstLinkpathDest(link.link, link.link);
-            return dest ? dest.path : link.link;
-        });
-    }
-
-    /**
-     * 提取标题
-     */
-    private extractHeaders(metadata: CachedMetadata | null): string[] {
-        if (!metadata?.headings) return [];
-        return metadata.headings.map(h => h.heading);
-    }
-
-    /**
      * 判断文件是否应该被索引
      */
     private shouldIndexFile(file: TFile): boolean {
         // 检查路径是否在根目录下
-        if (!file.path.startsWith(this.rootPath)) return false;
-
+        if (!file.path.startsWith(useTimerStore().dailyNotesSettings?.folder || 'Obsidian Time Tracker Daily Note')) return false;
         // 检查文件是否已存在且未修改
         const existingFile = this.store.allEntries?.get(file.path);
-        if (existingFile && existingFile.mtime === file.stat.mtime) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * 查询方法
-     */
-    public getFileMetadata(path: string): FileMetadata | undefined {
-        return this.store.allEntries?.get(path);
-    }
-
-    public getAllTags(): Set<string> {
-        const tags = new Set<string>();
-        this.store.allEntries?.forEach(file => {
-            file.tags.forEach(tag => tags.add(tag));
-        });
-        return tags;
-    }
-
-    public findFilesByTag(tag: string): FileMetadata[] {
-        return Array.from(this.store.allEntries?.values() || [])
-            .filter(file => file.tags.includes(tag));
-    }
-
-    public findFilesWithLink(targetPath: string): FileMetadata[] {
-        return Array.from(this.store.allEntries?.values() || [])
-            .filter(file => file.links.includes(targetPath));
-    }
-
-    public searchByContent(query: string): FileMetadata[] {
-        const lowerQuery = query.toLowerCase();
-        return Array.from(this.store.allEntries?.values() || [])
-            .filter(file => file.content?.toLowerCase().includes(lowerQuery));
-    }
-
-    public getFrontmatterValue(path: string, key: string): any {
-        const metadata = this.store.allEntries?.get(path);
-        return metadata?.frontmatter?.[key];
+        return !(existingFile && existingFile.mtime === file.stat.mtime);
     }
 }
