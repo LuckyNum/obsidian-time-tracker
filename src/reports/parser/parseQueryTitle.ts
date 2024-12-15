@@ -19,7 +19,7 @@ export class QueryTitleParser extends Parser {
                 query.customTitle = `从 ${tokens[2]} 到 ${(tokens[4] as string).toLowerCase()}`;
                 break;
             case Keyword.PAST:
-                query.customTitle = `过去 ${tokens[2]} ${(<string>tokens[3]).toLowerCase()}`;
+                query.customTitle = `过去 ${tokens[2]} ${this.getTitleSuffix(<string>tokens[3])}`;
                 break;
             default:
                 const defaultDate = moment(tokens[1], ISODateFormat, true);
@@ -30,6 +30,19 @@ export class QueryTitleParser extends Parser {
         }
 
         return tokens;
+    }
+
+    getTitleSuffix(keyword: string): string {
+        switch (keyword) {
+            case Keyword.DAYS:
+                return "日"
+            case Keyword.WEEKS:
+                return "周"
+            case Keyword.MONTHS:
+                return "月"
+            default:
+                return ""
+        }
     }
 
     get _acceptedTokens() {

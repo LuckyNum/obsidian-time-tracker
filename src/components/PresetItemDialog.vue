@@ -16,7 +16,7 @@
             </button>
         </div>
         <div class="preset-items-list">
-            <div v-for="(item, index) in presetItems" :key="index" class="preset-item">
+            <div v-for="(item, index) in settings.presetItems" :key="index" class="preset-item">
                 <span class="preset-item-title">{{ item.title }}</span>
                 <div>
                     <span class="preset-item-tag">{{ item.tag ? `#${item.tag}` : t('noTag') }}</span>
@@ -42,7 +42,7 @@ const props = defineProps<{
 }>();
 
 const timerStore = useTimerStore();
-const {presetItems} = storeToRefs(timerStore);
+const {settings} = storeToRefs(timerStore);
 
 const newItemTitle = ref('');
 const newItemTag = ref('');

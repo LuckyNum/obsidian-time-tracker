@@ -12,7 +12,7 @@ const props = defineProps<{
 }>();
 
 const timerStore = useTimerStore();
-const {entries, activeEntry, totalDuration, totalDurationNoActive} = storeToRefs(timerStore);
+const {todayEntries, activeEntry, totalDuration, totalDurationNoActive} = storeToRefs(timerStore);
 
 const getEntryColor = (index: number) => {
     return COLORS[index % COLORS.length];
@@ -54,7 +54,7 @@ const openPresetItemDialog = () => {
                     {{ t('start') }}
                 </p>
                 <p class="timer-subtitle" v-else>
-                    <span class="timer-tag" :style="{ backgroundColor: getEntryColor(entries.length) }">
+                    <span class="timer-tag" :style="{ backgroundColor: getEntryColor(todayEntries.length) }">
                         {{ activeEntry.tag || t('noTag') }}
                     </span> ·
                     {{ formatActiveTime(activeEntry.duration) }}
@@ -86,7 +86,7 @@ const openPresetItemDialog = () => {
 
             <div class="timer-progress-bar">
                 <div
-                    v-for="(entry, index) in entries"
+                    v-for="(entry, index) in todayEntries"
                     :key="entry.id"
                     :style="{
                         width: `${(entry.duration / totalDurationNoActive) * 100}%`,
@@ -96,9 +96,9 @@ const openPresetItemDialog = () => {
                 ></div>
             </div>
 
-            <div v-if="entries.length > 0" class="timer-entries-list">
+            <div v-if="todayEntries.length > 0" class="timer-entries-list">
                 <div
-                    v-for="(entry, index) in entries"
+                    v-for="(entry, index) in todayEntries"
                     :key="entry.id"
                     class="timer-entry"
                 >

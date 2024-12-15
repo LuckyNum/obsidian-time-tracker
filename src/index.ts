@@ -1,17 +1,20 @@
 import {App, MarkdownPostProcessorContext, Plugin, PluginManifest, WorkspaceLeaf} from 'obsidian';
-import './global.css';
 import {TimerRecordView, VIEW_TYPE_TIMER} from "@/obsidian/TimerRecordView.ts";
 import {TimerSettingTab} from "@/obsidian/TimerSettingView.ts";
 import {CODEBLOCK_LANG} from "@/lib/constants.ts";
-import {createApp} from "vue";
 import TimerReportView from "@/views/TimerReportView.vue";
-import {createPinia, Pinia} from "pinia";
 import {useTimerStore} from "@/store/TimerStore.ts";
 import {TimerService} from "@/obsidian/TimerService.ts";
+import {ObsidianDirectoryIndexer} from "@/obsidian/ObsidianDirectoryIndexer.ts";
+import {createApp} from "vue";
+import {createPinia, Pinia} from "pinia";
+import './global.css';
 
 export default class ObsidianTimeTrackerPlugin extends Plugin {
     // @ts-ignore
     public timerService: TimerService;
+    // @ts-ignore
+    public indexer: ObsidianDirectoryIndexer;
 
     constructor(app: App, manifest: PluginManifest) {
         super(app, manifest);
@@ -20,7 +23,6 @@ export default class ObsidianTimeTrackerPlugin extends Plugin {
     async onload(): Promise<void> {
         // 初始化service
         this.timerService = new TimerService(this);
-
         // 初始化存储
         const pinia = createPinia();
         const timerStore = useTimerStore(pinia);
@@ -37,15 +39,22 @@ export default class ObsidianTimeTrackerPlugin extends Plugin {
         // 初始化存储数据
         await timerStore.init(this);
 
-        // 注册监听事件
-        this.registerTimerEvent();
-
         // 注册命令
         this.registerTimerCommand();
 
         this.initTimerView();
 
         document.body.toggleClass('@container', true);
+
+        // 创建索引器实例
+        this.indexer = new ObsidianDirectoryIndexer(this, "Daily Notes");
+
+        // 运行索引初始化
+        if (!this.app.workspace.layoutReady) {
+            this.app.workspace.onLayoutReady(async () => this.indexer.initialize());
+        } else {
+            await this.indexer.initialize();
+        }
     }
 
     private async registerTimerView(pinia: Pinia) {
@@ -60,7 +69,7 @@ export default class ObsidianTimeTrackerPlugin extends Plugin {
     }
 
     private initTimerView() {
-        this.app.workspace.onLayoutReady(() => {
+        this.app.workspace.onLayoutReady(async () => {
             this.app.workspace.detachLeavesOfType(VIEW_TYPE_TIMER);
             this.app.workspace.getRightLeaf(false)?.setViewState({
                 type: VIEW_TYPE_TIMER,
@@ -80,23 +89,6 @@ export default class ObsidianTimeTrackerPlugin extends Plugin {
             vueApp.use(pinia);
             vueApp.mount(el);
         });
-    }
-
-    private registerTimerEvent() {
-        // 监听文件修改事件
-        this.registerEvent(
-            this.app.vault.on('modify', async (): Promise<void> => {
-                useTimerStore().entries = await this.timerService.getTodayEntries();
-                useTimerStore().sevenDayEntries = await this.timerService.getRecent7DayEntries();
-            })
-        );
-        // 监听文件删除事件
-        this.registerEvent(
-            this.app.vault.on('delete', async (): Promise<void> => {
-                useTimerStore().entries = await this.timerService.getTodayEntries();
-                useTimerStore().sevenDayEntries = await this.timerService.getRecent7DayEntries();
-            })
-        );
     }
 
     private registerTimerCommand() {

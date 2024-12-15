@@ -6480,13 +6480,6 @@ function mergeReactiveObjects(target, patchToApply) {
   }
   return target;
 }
-const skipHydrateSymbol = (
-  /* istanbul ignore next */
-  Symbol()
-);
-function shouldHydrate(obj) {
-  return !isPlainObject(obj) || !obj.hasOwnProperty(skipHydrateSymbol);
-}
 const { assign } = Object;
 function isComputed(o) {
   return !!(isRef(o) && o.effect);
@@ -6524,11 +6517,6 @@ function createSetupStore($id, setup, options = {}, pinia, hot, isOptionsStore) 
   let actionSubscriptions = [];
   let debuggerEvents;
   const initialState = pinia.state.value[$id];
-  if (!isOptionsStore && !initialState && true) {
-    {
-      pinia.state.value[$id] = {};
-    }
-  }
   ref({});
   let activeListener;
   function $patch(partialStateOrMutator) {
@@ -6559,16 +6547,13 @@ function createSetupStore($id, setup, options = {}, pinia, hot, isOptionsStore) 
     isSyncListening = true;
     triggerSubscriptions(subscriptions, subscriptionMutation, pinia.state.value[$id]);
   }
-  const $reset = isOptionsStore ? function $reset2() {
+  const $reset = function $reset2() {
     const { state } = options;
     const newState = state ? state() : {};
     this.$patch(($state) => {
       assign($state, newState);
     });
-  } : (
-    /* istanbul ignore next */
-    noop$1
-  );
+  };
   function $dispose() {
     scope.stop();
     subscriptions = [];
@@ -6649,20 +6634,8 @@ function createSetupStore($id, setup, options = {}, pinia, hot, isOptionsStore) 
   const setupStore = runWithContext(() => pinia._e.run(() => (scope = effectScope()).run(() => setup({ action }))));
   for (const key in setupStore) {
     const prop = setupStore[key];
-    if (isRef(prop) && !isComputed(prop) || isReactive(prop)) {
-      if (!isOptionsStore) {
-        if (initialState && shouldHydrate(prop)) {
-          if (isRef(prop)) {
-            prop.value = initialState[key];
-          } else {
-            mergeReactiveObjects(prop, initialState[key]);
-          }
-        }
-        {
-          pinia.state.value[$id][key] = prop;
-        }
-      }
-    } else if (typeof prop === "function") {
+    if (isRef(prop) && !isComputed(prop) || isReactive(prop)) ;
+    else if (typeof prop === "function") {
       const actionValue = action(prop, key);
       {
         setupStore[key] = actionValue;
@@ -6704,10 +6677,12 @@ function createSetupStore($id, setup, options = {}, pinia, hot, isOptionsStore) 
 function defineStore(idOrOptions, setup, setupOptions) {
   let id2;
   let options;
-  const isSetupStore = typeof setup === "function";
-  {
+  if (typeof idOrOptions === "string") {
     id2 = idOrOptions;
-    options = isSetupStore ? setupOptions : setup;
+    options = setup;
+  } else {
+    options = idOrOptions;
+    id2 = idOrOptions.id;
   }
   function useStore(pinia, hot) {
     const hasContext = hasInjectionContext();
@@ -6718,9 +6693,7 @@ function defineStore(idOrOptions, setup, setupOptions) {
       setActivePinia(pinia);
     pinia = activePinia;
     if (!pinia._s.has(id2)) {
-      if (isSetupStore) {
-        createSetupStore(id2, setup, options, pinia);
-      } else {
+      {
         createOptionsStore(id2, options, pinia);
       }
     }
@@ -7186,8 +7159,7 @@ var Keyword = /* @__PURE__ */ ((Keyword2) => {
   Keyword2["GROUP"] = "GROUP";
   Keyword2["BY"] = "BY";
   Keyword2["DATE"] = "DATE";
-  Keyword2["PROJECT"] = "PROJECT";
-  Keyword2["CLIENT"] = "CLIENT";
+  Keyword2["TAG"] = "TAG";
   Keyword2["SORT"] = "SORT";
   Keyword2["ASC"] = "ASC";
   Keyword2["DESC"] = "DESC";
@@ -7197,8 +7169,19 @@ var Keyword = /* @__PURE__ */ ((Keyword2) => {
 var QueryType = /* @__PURE__ */ ((QueryType2) => {
   QueryType2["SUMMARY"] = "SUMMARY";
   QueryType2["LIST"] = "LIST";
+  QueryType2["NULL"] = "NULL";
   return QueryType2;
 })(QueryType || {});
+var SortOrder = /* @__PURE__ */ ((SortOrder2) => {
+  SortOrder2["ASC"] = "ASC";
+  SortOrder2["DESC"] = "DESC";
+  return SortOrder2;
+})(SortOrder || {});
+var GroupBy = /* @__PURE__ */ ((GroupBy2) => {
+  GroupBy2["TAG"] = "TAG";
+  GroupBy2["DATE"] = "DATE";
+  return GroupBy2;
+})(GroupBy || {});
 const CODEBLOCK_LANG = "time-tracker";
 const DEFAULT_SETTINGS = {
   dailyNotesFolder: "Daily Notes",
@@ -7212,7 +7195,7 @@ const DEFAULT_SETTINGS = {
 const DEFAULT_QUERY = {
   from: "",
   to: "",
-  type: QueryType.SUMMARY
+  type: QueryType.NULL
 };
 const COLORS = [
   "#4ECDC4",
@@ -7237,33 +7220,58 @@ const COLORS = [
   "#FF6B6B"
 ];
 const ISODateFormat = "YYYY-MM-DD";
-const useTimerStore = /* @__PURE__ */ defineStore("timerStore", {
+const useTimerStore = /* @__PURE__ */ defineStore({
+  id: "timerStore",
   state: () => ({
-    entries: [],
-    sevenDayEntries: [],
+    todayEntries: [],
+    allEntries: /* @__PURE__ */ new Map(),
     activeEntry: null,
     timerService: null,
     settings: DEFAULT_SETTINGS,
-    presetItems: []
+    dailyNotesSettings: null,
+    initialized: false
   }),
   getters: {
     totalDuration: (state) => {
       var _a;
-      return state.entries.reduce((acc, entry) => acc + entry.duration, 0) + (((_a = state.activeEntry) == null ? void 0 : _a.duration) || 0);
+      return state.todayEntries.reduce((acc, entry) => acc + entry.duration, 0) + (((_a = state.activeEntry) == null ? void 0 : _a.duration) || 0);
     },
-    totalDurationNoActive: (state) => state.entries.reduce((acc, entry) => acc + entry.duration, 0)
+    totalDurationNoActive: (state) => state.todayEntries.reduce((acc, entry) => acc + entry.duration, 0)
   },
   actions: {
+    getTimeRangeEntries(query) {
+      const result = /* @__PURE__ */ new Map();
+      if (!query.from || !query.to || !this.dailyNotesSettings) {
+        return result;
+      }
+      const fromDate = window.moment(query.from).startOf("day");
+      const toDate = window.moment(query.to).endOf("day");
+      const possiblePaths = /* @__PURE__ */ new Set();
+      let currentDate = fromDate.clone();
+      while (currentDate.isSameOrBefore(toDate)) {
+        const filePath = `${this.dailyNotesSettings.folder}/${currentDate.format(this.dailyNotesSettings.format)}.md`;
+        possiblePaths.add(filePath);
+        currentDate.add(1, "day");
+      }
+      for (const [filePath, metadata] of this.allEntries.entries()) {
+        if (possiblePaths.has(filePath)) {
+          if (metadata.timeEntry && metadata.timeEntry.length > 0) {
+            result.set(filePath, metadata.timeEntry);
+          }
+        }
+      }
+      return result;
+    },
     async init(plugin) {
+      var _a;
       this.timerService = plugin.timerService;
       this.settings = Object.assign({}, DEFAULT_SETTINGS, await plugin.loadData());
-      this.entries = await this.timerService.getTodayEntries();
-      this.sevenDayEntries = await this.timerService.getRecent7DayEntries();
-      this.presetItems = this.settings.presetItems || [];
+      this.todayEntries = await this.timerService.getTodayEntries();
+      this.dailyNotesSettings = await ((_a = this.timerService) == null ? void 0 : _a.plugin.app.internalPlugins.getPluginById("daily-notes").instance.options);
     },
     async refreshToday() {
       if (this.timerService) {
-        this.entries = await this.timerService.getTodayEntries();
+        this.todayEntries = await this.timerService.getTodayEntries();
       }
     },
     async startTimer(title, tag) {
@@ -7274,7 +7282,7 @@ const useTimerStore = /* @__PURE__ */ defineStore("timerStore", {
         startTime: Date.now(),
         endTime: 0,
         duration: 0,
-        color: COLORS[(this.entries.length + 1) % COLORS.length]
+        color: COLORS[(this.todayEntries.length + 1) % COLORS.length]
       };
       this.updateActiveDuration();
     },
@@ -7295,7 +7303,7 @@ const useTimerStore = /* @__PURE__ */ defineStore("timerStore", {
         } else {
           const created = await ((_b = this.timerService) == null ? void 0 : _b.addTimeEntryToDailyNote(newEntry));
           this.activeEntry = null;
-          this.entries = this.timerService ? await this.timerService.getTodayEntries() : [];
+          this.todayEntries = this.timerService ? await this.timerService.getTodayEntries() : [];
           if (created) {
             return true;
           }
@@ -7311,21 +7319,21 @@ const useTimerStore = /* @__PURE__ */ defineStore("timerStore", {
     }
   }
 });
-const _hoisted_1$5 = { class: "timer-container" };
-const _hoisted_2$3 = { class: "timer-header" };
-const _hoisted_3$3 = { class: "timer-info" };
-const _hoisted_4$3 = { class: "timer-title" };
-const _hoisted_5$3 = {
+const _hoisted_1$6 = { class: "timer-container" };
+const _hoisted_2$4 = { class: "timer-header" };
+const _hoisted_3$4 = { class: "timer-info" };
+const _hoisted_4$4 = { class: "timer-title" };
+const _hoisted_5$4 = {
   key: 0,
   class: "timer-subtitle"
 };
-const _hoisted_6$3 = {
+const _hoisted_6$4 = {
   key: 1,
   class: "timer-subtitle"
 };
-const _hoisted_7$2 = { class: "timer-summary" };
-const _hoisted_8$1 = { class: "timer-summary-header" };
-const _hoisted_9 = { style: { "display": "flex", "align-items": "center", "justify-content": "center" } };
+const _hoisted_7$3 = { class: "timer-summary" };
+const _hoisted_8$2 = { class: "timer-summary-header" };
+const _hoisted_9$1 = { style: { "display": "flex", "align-items": "center", "justify-content": "center" } };
 const _hoisted_10 = { class: "timer-summary-title" };
 const _hoisted_11 = { class: "timer-summary-total" };
 const _hoisted_12 = { class: "timer-progress-bar" };
@@ -7343,7 +7351,7 @@ const _hoisted_17 = {
   key: 1,
   class: "timer-no-entries"
 };
-const _sfc_main$7 = /* @__PURE__ */ defineComponent({
+const _sfc_main$9 = /* @__PURE__ */ defineComponent({
   __name: "TimerRecordView",
   props: {
     timerService: {}
@@ -7351,7 +7359,7 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
   setup(__props) {
     const props = __props;
     const timerStore = useTimerStore();
-    const { entries, activeEntry, totalDuration, totalDurationNoActive } = storeToRefs(timerStore);
+    const { todayEntries, activeEntry, totalDuration, totalDurationNoActive } = storeToRefs(timerStore);
     const getEntryColor = (index) => {
       return COLORS[index % COLORS.length];
     };
@@ -7376,14 +7384,14 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
       props.timerService.showPresetItemDialog();
     };
     return (_ctx, _cache) => {
-      return openBlock(), createElementBlock("div", _hoisted_1$5, [
-        createBaseVNode("div", _hoisted_2$3, [
-          createBaseVNode("div", _hoisted_3$3, [
-            createBaseVNode("h2", _hoisted_4$3, toDisplayString(unref(activeEntry) ? unref(activeEntry).title : unref(t)("noActive")), 1),
-            !unref(activeEntry) ? (openBlock(), createElementBlock("p", _hoisted_5$3, toDisplayString(unref(t)("start")), 1)) : (openBlock(), createElementBlock("p", _hoisted_6$3, [
+      return openBlock(), createElementBlock("div", _hoisted_1$6, [
+        createBaseVNode("div", _hoisted_2$4, [
+          createBaseVNode("div", _hoisted_3$4, [
+            createBaseVNode("h2", _hoisted_4$4, toDisplayString(unref(activeEntry) ? unref(activeEntry).title : unref(t)("noActive")), 1),
+            !unref(activeEntry) ? (openBlock(), createElementBlock("p", _hoisted_5$4, toDisplayString(unref(t)("start")), 1)) : (openBlock(), createElementBlock("p", _hoisted_6$4, [
               createBaseVNode("span", {
                 class: "timer-tag",
-                style: normalizeStyle({ backgroundColor: getEntryColor(unref(entries).length) })
+                style: normalizeStyle({ backgroundColor: getEntryColor(unref(todayEntries).length) })
               }, toDisplayString(unref(activeEntry).tag || unref(t)("noTag")), 5),
               createTextVNode(" · " + toDisplayString(formatActiveTime(unref(activeEntry).duration)), 1)
             ]))
@@ -7402,9 +7410,9 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
             }))
           ], 2)
         ]),
-        createBaseVNode("div", _hoisted_7$2, [
-          createBaseVNode("div", _hoisted_8$1, [
-            createBaseVNode("div", _hoisted_9, [
+        createBaseVNode("div", _hoisted_7$3, [
+          createBaseVNode("div", _hoisted_8$2, [
+            createBaseVNode("div", _hoisted_9$1, [
               createBaseVNode("h3", _hoisted_10, toDisplayString(unref(t)("today")), 1),
               createBaseVNode("div", {
                 onClick: _cache[1] || (_cache[1] = ($event) => openPresetItemDialog()),
@@ -7417,7 +7425,7 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
             createBaseVNode("span", _hoisted_11, toDisplayString(formatTotalTime(unref(totalDuration))), 1)
           ]),
           createBaseVNode("div", _hoisted_12, [
-            (openBlock(true), createElementBlock(Fragment, null, renderList(unref(entries), (entry, index) => {
+            (openBlock(true), createElementBlock(Fragment, null, renderList(unref(todayEntries), (entry, index) => {
               return openBlock(), createElementBlock("div", {
                 key: entry.id,
                 style: normalizeStyle({
@@ -7428,8 +7436,8 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
               }, null, 4);
             }), 128))
           ]),
-          unref(entries).length > 0 ? (openBlock(), createElementBlock("div", _hoisted_13, [
-            (openBlock(true), createElementBlock(Fragment, null, renderList(unref(entries), (entry, index) => {
+          unref(todayEntries).length > 0 ? (openBlock(), createElementBlock("div", _hoisted_13, [
+            (openBlock(true), createElementBlock(Fragment, null, renderList(unref(todayEntries), (entry, index) => {
               return openBlock(), createElementBlock("div", {
                 key: entry.id,
                 class: "timer-entry"
@@ -7461,7 +7469,7 @@ const _export_sfc = (sfc, props) => {
   }
   return target;
 };
-const TimerComponent = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["__scopeId", "data-v-f791b4d9"]]);
+const TimerComponent = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["__scopeId", "data-v-0394bf91"]]);
 const VIEW_TYPE_TIMER = "timer-view";
 class TimerRecordView extends obsidian.ItemView {
   constructor(leaf, plugin, pinia) {
@@ -10637,7 +10645,7 @@ Transform.prototype = {
   }
 };
 Transform.prototype;
-const _sfc_main$6 = /* @__PURE__ */ defineComponent({
+const _sfc_main$8 = /* @__PURE__ */ defineComponent({
   __name: "DonutChart",
   props: {
     width: {},
@@ -10703,7 +10711,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const _sfc_main$5 = /* @__PURE__ */ defineComponent({
+const _sfc_main$7 = /* @__PURE__ */ defineComponent({
   __name: "BarChart",
   props: {
     width: {},
@@ -10811,28 +10819,28 @@ const _sfc_main$5 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const _hoisted_1$4 = { class: "time-entry-list" };
-const _hoisted_2$2 = { class: "group-items" };
-const _hoisted_3$2 = { class: "item-left" };
-const _hoisted_4$2 = { class: "item-right" };
-const _hoisted_5$2 = { class: "group-item-time time" };
-const _hoisted_6$2 = { class: "group-item-time percent" };
-const _sfc_main$4 = /* @__PURE__ */ defineComponent({
+const _hoisted_1$5 = { class: "time-entry-list" };
+const _hoisted_2$3 = { class: "group-items" };
+const _hoisted_3$3 = { class: "item-left" };
+const _hoisted_4$3 = { class: "item-right" };
+const _hoisted_5$3 = { class: "group-item-time time" };
+const _hoisted_6$3 = { class: "group-item-time percent" };
+const _sfc_main$6 = /* @__PURE__ */ defineComponent({
   __name: "ProjectSummaryList",
   props: {
     data: {}
   },
   setup(__props) {
     return (_ctx, _cache) => {
-      return openBlock(), createElementBlock("div", _hoisted_1$4, [
+      return openBlock(), createElementBlock("div", _hoisted_1$5, [
         _cache[0] || (_cache[0] = createStaticVNode('<div class="time-entry-group-header" data-v-ab727119><div class="header-left" data-v-ab727119><span data-v-ab727119>标签</span></div><div class="header-right" data-v-ab727119><div class="header-right-item time" data-v-ab727119>时间</div><div class="header-right-item percent" data-v-ab727119>占比</div></div></div>', 1)),
-        createBaseVNode("div", _hoisted_2$2, [
+        createBaseVNode("div", _hoisted_2$3, [
           (openBlock(true), createElementBlock(Fragment, null, renderList(_ctx.data, (d) => {
             return openBlock(), createElementBlock("div", {
               key: d.title,
               class: "group-item"
             }, [
-              createBaseVNode("div", _hoisted_3$2, [
+              createBaseVNode("div", _hoisted_3$3, [
                 d.hex ? (openBlock(), createElementBlock("div", {
                   key: 0,
                   class: "project-circle",
@@ -10840,9 +10848,9 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
                 }, null, 4)) : createCommentVNode("", true),
                 createBaseVNode("span", null, toDisplayString(d.title || "(无数据)"), 1)
               ]),
-              createBaseVNode("div", _hoisted_4$2, [
-                createBaseVNode("div", _hoisted_5$2, toDisplayString(d.totalTime), 1),
-                createBaseVNode("div", _hoisted_6$2, toDisplayString(d.percent.toFixed(1)) + "%", 1)
+              createBaseVNode("div", _hoisted_4$3, [
+                createBaseVNode("div", _hoisted_5$3, toDisplayString(d.totalTime), 1),
+                createBaseVNode("div", _hoisted_6$3, toDisplayString(d.percent.toFixed(1)) + "%", 1)
               ])
             ]);
           }), 128))
@@ -10851,7 +10859,7 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const ProjectSummaryList = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["__scopeId", "data-v-ab727119"]]);
+const ProjectSummaryList = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["__scopeId", "data-v-ab727119"]]);
 function secondsToTimeString(seconds) {
   const duration = obsidian.moment.duration(seconds, "seconds");
   return formatDuration(duration);
@@ -10875,13 +10883,22 @@ function formatDuration(duration) {
     seconds.toString().padStart(2, "0")
   ].join(":");
 }
+const _sfc_main$5 = {};
+const _hoisted_1$4 = { class: "loading-spinner" };
+function _sfc_render(_ctx, _cache) {
+  return openBlock(), createElementBlock("div", _hoisted_1$4, _cache[0] || (_cache[0] = [
+    createBaseVNode("div", { class: "spinner" }, null, -1),
+    createBaseVNode("p", null, "Loading...", -1)
+  ]));
+}
+const LoadingSpinner = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render], ["__scopeId", "data-v-d4dd542d"]]);
 const _hoisted_1$3 = { class: "summary-header" };
 const BREAKPOINT = 500;
 const DONUT_WIDTH = 190;
-const _sfc_main$3 = /* @__PURE__ */ defineComponent({
+const _sfc_main$4 = /* @__PURE__ */ defineComponent({
   __name: "SummaryReport",
   props: {
-    title: {}
+    query: {}
   },
   setup(__props) {
     const props = __props;
@@ -10912,12 +10929,13 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
     }
     function getPieData() {
       const tagTotals = {};
-      useTimerStore().sevenDayEntries.forEach((note) => {
-        note.tasks.forEach((task) => {
-          const duration = calculateDuration(task.startTime, task.endTime);
-          tagTotals[task.tag] = (tagTotals[task.tag] || 0) + duration;
+      useTimerStore().getTimeRangeEntries(props.query).forEach((timeEntries) => {
+        timeEntries.forEach((entry) => {
+          const duration = calculateDuration(entry.startTime, entry.endTime);
+          tagTotals[entry.tag] = (tagTotals[entry.tag] || 0) + duration;
         });
       });
+      console.log(11111);
       return Object.entries(tagTotals).map(([tag, minutes], index) => {
         return {
           name: tag,
@@ -10928,25 +10946,30 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
       });
     }
     function getBarData() {
-      return useTimerStore().sevenDayEntries.map((note) => {
-        const totalMinutes = note.tasks.reduce((acc, task) => acc + calculateDuration(task.startTime, task.endTime), 0);
-        return {
-          name: obsidian.moment(note.date).format("ddd MM-DD").replace(" ", "\n"),
+      const result = [];
+      useTimerStore().getTimeRangeEntries(props.query).forEach((timeEntries, fileName) => {
+        var _a, _b;
+        const totalMinutes = timeEntries.reduce((acc, task) => acc + calculateDuration(task.startTime, task.endTime), 0);
+        result.push({
+          name: obsidian.moment(fileName, `${(_a = useTimerStore().dailyNotesSettings) == null ? void 0 : _a.folder}/${(_b = useTimerStore().dailyNotesSettings) == null ? void 0 : _b.format}`).format("ddd MM-DD").replace(" ", "\n"),
           value: totalMinutes / 60,
-          displayValue: `${note.date} (${secondsToTimeString(totalMinutes * 60)})`
-        };
-      }).reverse();
+          displayValue: `${fileName} (${secondsToTimeString(totalMinutes * 60)})`
+        });
+      });
+      console.log(11111);
+      return result.reverse();
     }
     function getListData() {
       const tagTotals = {};
       let totalMinutes = 0;
-      useTimerStore().sevenDayEntries.forEach((note) => {
-        note.tasks.forEach((task) => {
-          const duration = calculateDuration(task.startTime, task.endTime);
+      useTimerStore().getTimeRangeEntries(props.query).forEach((timeEntries) => {
+        timeEntries.forEach((entry) => {
+          const duration = calculateDuration(entry.startTime, entry.endTime);
           totalMinutes += duration;
-          tagTotals[task.tag] = (tagTotals[task.tag] || 0) + duration;
+          tagTotals[entry.tag] = (tagTotals[entry.tag] || 0) + duration;
         });
       });
+      console.log(11111);
       return Object.entries(tagTotals).map(([tag, minutes], index) => ({
         title: tag,
         hex: COLORS[index],
@@ -10956,31 +10979,33 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
     }
     return (_ctx, _cache) => {
       return openBlock(), createElementBlock(Fragment, null, [
-        createBaseVNode("span", _hoisted_1$3, toDisplayString(props.title), 1),
+        createBaseVNode("span", _hoisted_1$3, toDisplayString(props.query.customTitle), 1),
         createBaseVNode("div", {
           ref_key: "widthElement",
           ref: widthElement,
           class: "summary-container"
         }, [
-          barWidth.value && getBarData() ? (openBlock(), createBlock(_sfc_main$5, {
+          unref(useTimerStore)().initialized && barWidth.value && getBarData() ? (openBlock(), createBlock(_sfc_main$7, {
             key: 0,
             data: getBarData(),
             width: barWidth.value
           }, null, 8, ["data", "width"])) : createCommentVNode("", true),
-          width.value >= BREAKPOINT && getPieData() ? (openBlock(), createBlock(_sfc_main$6, {
+          unref(useTimerStore)().initialized && width.value >= BREAKPOINT && getPieData() ? (openBlock(), createBlock(_sfc_main$8, {
             key: 1,
             data: getPieData(),
             width: DONUT_WIDTH
           }, null, 8, ["data"])) : createCommentVNode("", true)
         ], 512),
-        createVNode(ProjectSummaryList, {
+        unref(useTimerStore)().initialized && getListData() ? (openBlock(), createBlock(ProjectSummaryList, {
+          key: 0,
           data: getListData()
-        }, null, 8, ["data"])
+        }, null, 8, ["data"])) : createCommentVNode("", true),
+        !unref(useTimerStore)().initialized ? (openBlock(), createBlock(LoadingSpinner, { key: 1 })) : createCommentVNode("", true)
       ], 64);
     };
   }
 });
-const SummaryReport = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["__scopeId", "data-v-d50a8aed"]]);
+const SummaryReport = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["__scopeId", "data-v-f5a5801f"]]);
 function tokenize(query) {
   let match = query.match(
     /(?:[^\s"',]+|"[^"]*"|'[^']*')+/g
@@ -11155,7 +11180,7 @@ class QueryTitleParser extends Parser {
         query.customTitle = `从 ${tokens[2]} 到 ${tokens[4].toLowerCase()}`;
         break;
       case Keyword.PAST:
-        query.customTitle = `过去 ${tokens[2]} ${tokens[3].toLowerCase()}`;
+        query.customTitle = `过去 ${tokens[2]} ${this.getTitleSuffix(tokens[3])}`;
         break;
       default:
         const defaultDate = obsidian.moment(tokens[1], ISODateFormat, true);
@@ -11166,21 +11191,234 @@ class QueryTitleParser extends Parser {
     }
     return tokens;
   }
+  getTitleSuffix(keyword) {
+    switch (keyword) {
+      case Keyword.DAYS:
+        return "日";
+      case Keyword.WEEKS:
+        return "周";
+      case Keyword.MONTHS:
+        return "月";
+      default:
+        return "";
+    }
+  }
   get _acceptedTokens() {
     return [];
   }
 }
-function parse(queryString) {
+class SortParser extends Parser {
+  parse(tokens, query) {
+    this.test(tokens, true);
+    if (query.sort) {
+      console.log(query.sort);
+    }
+    const _tokens = [...tokens];
+    switch (_tokens[1]) {
+      case Keyword.ASC:
+        query.sort = SortOrder.ASC;
+        break;
+      case Keyword.DESC:
+        query.sort = SortOrder.DESC;
+        break;
+      default:
+        console.log(_tokens[1], [Keyword.ASC, Keyword.DESC]);
+    }
+    return _tokens.slice(2);
+  }
+  get _acceptedTokens() {
+    return [Keyword.SORT];
+  }
+}
+const _GroupByParser = class _GroupByParser extends Parser {
+  parse(tokens, query) {
+    this.test(tokens, true);
+    if (tokens[1] !== Keyword.BY) {
+      console.log(tokens[1], [Keyword.BY]);
+    }
+    if (query.groupBy) {
+      console.log(query.groupBy);
+    }
+    if (query.type !== QueryType.LIST) {
+      console.log(
+        '"GROUP BY" can only be used on "LIST" queries.'
+      );
+    }
+    const _tokens = [...tokens];
+    switch (_tokens[2]) {
+      case Keyword.DATE:
+        query.groupBy = GroupBy.DATE;
+        break;
+      case Keyword.TAG:
+        query.groupBy = GroupBy.TAG;
+        break;
+      default:
+        console.log(
+          _tokens[2],
+          _GroupByParser._acceptedGroupings
+        );
+    }
+    return _tokens.slice(3);
+  }
+  get _acceptedTokens() {
+    return [Keyword.GROUP];
+  }
+};
+__publicField(_GroupByParser, "_acceptedGroupings", [
+  Keyword.DATE,
+  Keyword.TAG
+]);
+let GroupByParser = _GroupByParser;
+function parseList(tokens, maxResults) {
+  const _tokens = [...tokens];
+  const list = [];
+  while (_tokens.length > 0 && list.length < maxResults) {
+    if (_tokens[0] in Keyword) break;
+    if (typeof _tokens[0] == "string" && _tokens[0][0] == '"') {
+      list.push(_tokens[0].slice(1, -1));
+    } else {
+      list.push(_tokens[0]);
+    }
+    _tokens.splice(0, 1);
+  }
+  if (list.length == 0) {
+    throw new EvalError("No UserInput tokens at head of tokens array.");
+  }
+  return [list, _tokens];
+}
+class CustomTitleParser extends Parser {
+  parse(tokens, query) {
+    this.test(tokens, true);
+    let _tokens = [...tokens.slice(1)];
+    let list;
+    try {
+      [list, _tokens] = parseList(_tokens, 1);
+    } catch (err) {
+      console.log(
+        `"TITLE" must be followed by a string wrapped in double quotes. For example: 'TITLE "Work Projects"'`
+      );
+    }
+    query.customTitle = list[0];
+    return _tokens;
+  }
+  get _acceptedTokens() {
+    return [Keyword.TITLE];
+  }
+}
+async function parse(queryString) {
   let tokens = tokenize(queryString);
   const query = DEFAULT_QUERY;
   tokens = new QueryTitleParser().parse(tokens, query);
   tokens = new QueryTypeParser().parse(tokens, query);
   tokens = new QueryIntervalParser().parse(tokens, query);
-  console.log(tokens);
-  console.log(query);
+  const groupByParser = new GroupByParser();
+  const sortParser = new SortParser();
+  tokens = groupByParser.test(tokens) ? groupByParser.parse(tokens, query) : tokens;
+  tokens = sortParser.test(tokens) ? sortParser.parse(tokens, query) : tokens;
+  const customTitleParser = new CustomTitleParser();
+  tokens = customTitleParser.test(tokens) ? customTitleParser.parse(tokens, query) : tokens;
   return query;
 }
-const _hoisted_1$2 = { class: "container" };
+const _hoisted_1$2 = {
+  key: 0,
+  class: "activity-container"
+};
+const _hoisted_2$2 = { class: "activity-title" };
+const _hoisted_3$2 = { class: "activity-content" };
+const _hoisted_4$2 = { class: "activity-item-description" };
+const _hoisted_5$2 = ["aria-label"];
+const _hoisted_6$2 = {
+  key: 1,
+  class: "activity-item-count"
+};
+const _hoisted_7$2 = { class: "activity-item-title" };
+const _hoisted_8$1 = {
+  key: 2,
+  class: "activity-item-tag"
+};
+const _hoisted_9 = { class: "activity-item-duration" };
+const _sfc_main$3 = /* @__PURE__ */ defineComponent({
+  __name: "ListReport",
+  props: {
+    query: {}
+  },
+  setup(__props) {
+    const props = __props;
+    function getListData() {
+      if (props.query.groupBy && props.query.groupBy === GroupBy.TAG) {
+        return Array.from(useTimerStore().getTimeRangeEntries(props.query).values()).flat().reduce((acc, current) => {
+          const existing = acc.find((item) => item.title === current.title && item.tag === current.tag);
+          if (existing) {
+            existing.duration += current.duration;
+            existing.count = (existing.count || 0) + 1;
+          } else {
+            acc.push({
+              ...current,
+              count: (current.count || 0) + 1
+            });
+          }
+          return acc;
+        }, []).reduce((acc, item) => {
+          const groupKey = item.tag;
+          if (!acc.has(groupKey)) {
+            acc.set(groupKey, []);
+          }
+          acc.get(groupKey).push(item);
+          return acc;
+        }, /* @__PURE__ */ new Map());
+      } else {
+        return useTimerStore().getTimeRangeEntries(props.query);
+      }
+    }
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock(Fragment, null, [
+        unref(useTimerStore)().initialized ? (openBlock(), createElementBlock("div", _hoisted_1$2, [
+          (openBlock(true), createElementBlock(Fragment, null, renderList(getListData(), (entries, index) => {
+            var _a, _b, _c;
+            return openBlock(), createElementBlock("div", {
+              key: entries[0],
+              class: "activity-group"
+            }, [
+              createBaseVNode("div", _hoisted_2$2, [
+                props.query.groupBy === unref(GroupBy).TAG ? (openBlock(), createElementBlock("div", {
+                  key: 0,
+                  class: "tag-circle",
+                  style: normalizeStyle({ backgroundColor: unref(COLORS)[index] })
+                }, null, 4)) : createCommentVNode("", true),
+                createTextVNode(" " + toDisplayString(props.query.groupBy === unref(GroupBy).TAG ? entries[0] : unref(obsidian.moment)(entries[0], `${(_a = unref(useTimerStore)().dailyNotesSettings) == null ? void 0 : _a.folder}/${(_b = unref(useTimerStore)().dailyNotesSettings) == null ? void 0 : _b.format}`).format((_c = unref(useTimerStore)().dailyNotesSettings) == null ? void 0 : _c.format)), 1)
+              ]),
+              createBaseVNode("div", _hoisted_3$2, [
+                (openBlock(true), createElementBlock(Fragment, null, renderList(entries[1], (entry) => {
+                  return openBlock(), createElementBlock("div", {
+                    key: entry.id,
+                    class: "activity-item"
+                  }, [
+                    createBaseVNode("div", _hoisted_4$2, [
+                      !entry.count ? (openBlock(), createElementBlock("div", {
+                        key: 0,
+                        class: "tag-circle",
+                        style: normalizeStyle({ backgroundColor: entry.color || "var(--text-muted)" }),
+                        "aria-label": entry.tag
+                      }, null, 12, _hoisted_5$2)) : createCommentVNode("", true),
+                      entry.count && entry.count !== 1 ? (openBlock(), createElementBlock("div", _hoisted_6$2, [
+                        createBaseVNode("span", null, toDisplayString(entry.count), 1)
+                      ])) : createCommentVNode("", true),
+                      createBaseVNode("div", _hoisted_7$2, toDisplayString(entry.title), 1),
+                      entry.tag && !entry.count ? (openBlock(), createElementBlock("span", _hoisted_8$1, toDisplayString(entry.tag), 1)) : createCommentVNode("", true)
+                    ]),
+                    createBaseVNode("div", _hoisted_9, toDisplayString(unref(formatDuration)(unref(obsidian.moment).duration(entry.duration * 1e3))), 1)
+                  ]);
+                }), 128))
+              ])
+            ]);
+          }), 128))
+        ])) : createCommentVNode("", true),
+        !unref(useTimerStore)().initialized ? (openBlock(), createBlock(LoadingSpinner, { key: 1 })) : createCommentVNode("", true)
+      ], 64);
+    };
+  }
+});
+const ListReport = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["__scopeId", "data-v-c3b55e50"]]);
 const _sfc_main$2 = /* @__PURE__ */ defineComponent({
   __name: "TimerReportView",
   props: {
@@ -11190,21 +11428,32 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
   },
   setup(__props) {
     const props = __props;
-    const title = ref("");
+    const query = ref(DEFAULT_QUERY);
+    const ready = ref(false);
     onMounted(async () => {
-      title.value = parseQuery(props.source).customTitle || "";
+      query.value = await parseQuery(props.source);
+      if (query.value.type != QueryType.NULL) {
+        ready.value = true;
+      }
     });
-    function parseQuery(source) {
-      return parse(source);
+    async function parseQuery(source) {
+      return await parse(source);
     }
     return (_ctx, _cache) => {
-      return openBlock(), createElementBlock("div", _hoisted_1$2, [
-        createVNode(SummaryReport, { title: title.value }, null, 8, ["title"])
-      ]);
+      return openBlock(), createElementBlock(Fragment, null, [
+        ready.value && query.value.type === unref(QueryType).SUMMARY ? (openBlock(), createBlock(SummaryReport, {
+          key: 0,
+          query: query.value
+        }, null, 8, ["query"])) : ready.value && query.value.type === unref(QueryType).LIST ? (openBlock(), createBlock(ListReport, {
+          key: 1,
+          query: query.value
+        }, null, 8, ["query"])) : createCommentVNode("", true),
+        !ready.value ? (openBlock(), createBlock(LoadingSpinner, { key: 2 })) : createCommentVNode("", true)
+      ], 64);
     };
   }
 });
-const TimerReportView = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["__scopeId", "data-v-f31ce873"]]);
+const TimerReportView = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["__scopeId", "data-v-32e7d0c8"]]);
 var module$1 = {};
 (function main(global2, module2, isWorker, workerSize) {
   var canUseWorker = !!(global2.Worker && global2.Blob && global2.Promise && global2.OffscreenCanvas && global2.OffscreenCanvasRenderingContext2D && global2.HTMLCanvasElement && global2.HTMLCanvasElement.prototype.transferControlToOffscreen && global2.URL && global2.URL.createObjectURL);
@@ -11917,7 +12166,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
   setup(__props) {
     const props = __props;
     const timerStore = useTimerStore();
-    const { presetItems } = storeToRefs(timerStore);
+    const { settings } = storeToRefs(timerStore);
     const newItemTitle = ref("");
     const newItemTag = ref("");
     const tags = ref([]);
@@ -11970,7 +12219,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
           }, " 新增 ")
         ]),
         createBaseVNode("div", _hoisted_5$1, [
-          (openBlock(true), createElementBlock(Fragment, null, renderList(unref(presetItems), (item, index) => {
+          (openBlock(true), createElementBlock(Fragment, null, renderList(unref(settings).presetItems, (item, index) => {
             return openBlock(), createElementBlock("div", {
               key: index,
               class: "preset-item"
@@ -11993,7 +12242,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const PresetItemDialog = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-d8612131"]]);
+const PresetItemDialog = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-cdc31a9d"]]);
 const _hoisted_1 = { class: "new-item" };
 const _hoisted_2 = ["placeholder"];
 const _hoisted_3 = { value: "" };
@@ -12227,13 +12476,11 @@ class TimerService {
     return entries;
   }
   async addPresetItem(item) {
-    useTimerStore().presetItems.push(item);
-    useTimerStore().settings.presetItems = useTimerStore().presetItems;
+    useTimerStore().settings.presetItems.push(item);
     await this.plugin.saveData(useTimerStore().settings);
   }
   async removePresetItem(index) {
-    useTimerStore().presetItems.splice(index, 1);
-    useTimerStore().settings.presetItems = useTimerStore().presetItems;
+    useTimerStore().settings.presetItems.splice(index, 1);
     await this.plugin.saveData(useTimerStore().settings);
   }
   notice(message) {
@@ -12244,11 +12491,229 @@ class TimerService {
     return Object.keys(tags).map((tag) => tag.slice(1));
   }
 }
+class ObsidianDirectoryIndexer extends obsidian.Component {
+  constructor(plugin, rootPath = "/") {
+    super();
+    //@ts-ignore
+    __publicField(this, "initialized");
+    __publicField(this, "rootPath");
+    __publicField(this, "store");
+    this.plugin = plugin;
+    this.initialized = false;
+    this.rootPath = rootPath;
+    this.store = useTimerStore();
+  }
+  /**
+   * 初始化索引系统
+   */
+  async initialize() {
+    try {
+      this.plugin.addStatusBarItem().setText(`开始初始化目录: ${this.rootPath}`);
+      const startTime = Date.now();
+      this.registerEventHandlers();
+      const indexedSize = await this.indexInitialFiles();
+      this.initialized = true;
+      useTimerStore().initialized = true;
+      const duration = (Date.now() - startTime) / 1e3;
+      this.plugin.addStatusBarItem().setText(`处理了 ${indexedSize} 个文件，耗时 ${duration}s`);
+    } catch (error) {
+      console.error("初始化失败:", error);
+      throw error;
+    }
+  }
+  /**
+   * 注册事件处理器
+   */
+  registerEventHandlers() {
+    this.registerEvent(
+      this.plugin.app.vault.on("modify", async (file) => {
+        if (file instanceof obsidian.TFile && this.shouldIndexFile(file)) {
+          await this.indexFile(file);
+        }
+      })
+    );
+    this.registerEvent(
+      this.plugin.app.vault.on("delete", (file) => {
+        var _a;
+        if (file instanceof obsidian.TFile) {
+          (_a = this.store.allEntries) == null ? void 0 : _a.delete(file.path);
+        }
+      })
+    );
+    this.registerEvent(
+      this.plugin.app.vault.on("rename", (file, oldPath) => {
+        var _a, _b, _c, _d;
+        if (file instanceof obsidian.TFile) {
+          if ((_a = this.store.allEntries) == null ? void 0 : _a.has(oldPath)) {
+            const metadata = (_b = this.store.allEntries) == null ? void 0 : _b.get(oldPath);
+            (_c = this.store.allEntries) == null ? void 0 : _c.delete(oldPath);
+            if (metadata) {
+              metadata.path = file.path;
+              (_d = this.store.allEntries) == null ? void 0 : _d.set(file.path, metadata);
+            }
+          }
+        }
+      })
+    );
+    this.registerEvent(
+      this.plugin.app.metadataCache.on("changed", async (file) => {
+        if (this.shouldIndexFile(file)) {
+          await this.indexFile(file);
+        }
+      })
+    );
+  }
+  /**
+   * 初始化所有文件的索引
+   */
+  async indexInitialFiles() {
+    const files = this.plugin.app.vault.getMarkdownFiles().filter((file) => this.shouldIndexFile(file));
+    for (const file of files) {
+      await this.indexFile(file);
+    }
+    return files.length;
+  }
+  /**
+   * 索引单个文件
+   */
+  async indexFile(file) {
+    try {
+      const metadata = this.plugin.app.metadataCache.getFileCache(file);
+      const content = await this.plugin.app.vault.read(file);
+      const fileMetadata = {
+        path: file.path,
+        mtime: file.stat.mtime,
+        tags: this.extractTags(metadata),
+        links: this.extractLinks(metadata),
+        content,
+        frontmatter: metadata == null ? void 0 : metadata.frontmatter,
+        headers: this.extractHeaders(metadata),
+        timeEntry: this.extractTimeEntry(content)
+      };
+      this.store.allEntries.set(file.path, fileMetadata);
+    } catch (error) {
+      console.error(`索引文件失败 ${file.path}:`, error);
+    }
+  }
+  /**
+   * 提取时间戳
+   */
+  extractTimeEntry(content) {
+    const entries = [];
+    let isInTimeEntrySection = false;
+    const lines = content.split("\n");
+    for (const line of lines) {
+      if (line.trim() === this.store.settings.timeEntryHeading) {
+        isInTimeEntrySection = true;
+        continue;
+      }
+      if (isInTimeEntrySection) {
+        const match = line == null ? void 0 : line.trimEnd().match(/(\d{2}:\d{2}) - (\d{2}:\d{2}) (.*?)( #(\S+))?$/);
+        if (match) {
+          const [, startTime, endTime, title, , tag] = match;
+          const entry = {
+            id: Date.now() + entries.length,
+            title,
+            tag: tag || "",
+            startTime: window.moment(startTime, "HH:mm").valueOf(),
+            endTime: window.moment(endTime, "HH:mm").valueOf(),
+            duration: window.moment(endTime, "HH:mm").diff(window.moment(startTime, "HH:mm"), "seconds"),
+            color: COLORS[entries.length % COLORS.length]
+          };
+          entries.push(entry);
+        }
+      }
+    }
+    return entries;
+  }
+  /**
+   * 提取标签
+   */
+  extractTags(metadata) {
+    var _a;
+    const tags = /* @__PURE__ */ new Set();
+    if ((_a = metadata == null ? void 0 : metadata.frontmatter) == null ? void 0 : _a.tags) {
+      const frontmatterTags = Array.isArray(metadata.frontmatter.tags) ? metadata.frontmatter.tags : [metadata.frontmatter.tags];
+      frontmatterTags.forEach((tag) => tags.add(tag));
+    }
+    if (metadata == null ? void 0 : metadata.tags) {
+      metadata.tags.forEach((tag) => tags.add(tag.tag));
+    }
+    return Array.from(tags);
+  }
+  /**
+   * 提取链接
+   */
+  extractLinks(metadata) {
+    if (!(metadata == null ? void 0 : metadata.links)) return [];
+    return metadata.links.map((link) => {
+      const dest = this.plugin.app.metadataCache.getFirstLinkpathDest(link.link, link.link);
+      return dest ? dest.path : link.link;
+    });
+  }
+  /**
+   * 提取标题
+   */
+  extractHeaders(metadata) {
+    if (!(metadata == null ? void 0 : metadata.headings)) return [];
+    return metadata.headings.map((h2) => h2.heading);
+  }
+  /**
+   * 判断文件是否应该被索引
+   */
+  shouldIndexFile(file) {
+    var _a;
+    if (!file.path.startsWith(this.rootPath)) return false;
+    const existingFile = (_a = this.store.allEntries) == null ? void 0 : _a.get(file.path);
+    if (existingFile && existingFile.mtime === file.stat.mtime) {
+      return false;
+    }
+    return true;
+  }
+  /**
+   * 查询方法
+   */
+  getFileMetadata(path) {
+    var _a;
+    return (_a = this.store.allEntries) == null ? void 0 : _a.get(path);
+  }
+  getAllTags() {
+    var _a;
+    const tags = /* @__PURE__ */ new Set();
+    (_a = this.store.allEntries) == null ? void 0 : _a.forEach((file) => {
+      file.tags.forEach((tag) => tags.add(tag));
+    });
+    return tags;
+  }
+  findFilesByTag(tag) {
+    var _a;
+    return Array.from(((_a = this.store.allEntries) == null ? void 0 : _a.values()) || []).filter((file) => file.tags.includes(tag));
+  }
+  findFilesWithLink(targetPath) {
+    var _a;
+    return Array.from(((_a = this.store.allEntries) == null ? void 0 : _a.values()) || []).filter((file) => file.links.includes(targetPath));
+  }
+  searchByContent(query) {
+    var _a;
+    const lowerQuery = query.toLowerCase();
+    return Array.from(((_a = this.store.allEntries) == null ? void 0 : _a.values()) || []).filter((file) => {
+      var _a2;
+      return (_a2 = file.content) == null ? void 0 : _a2.toLowerCase().includes(lowerQuery);
+    });
+  }
+  getFrontmatterValue(path, key) {
+    var _a, _b;
+    const metadata = (_a = this.store.allEntries) == null ? void 0 : _a.get(path);
+    return (_b = metadata == null ? void 0 : metadata.frontmatter) == null ? void 0 : _b[key];
+  }
+}
 class ObsidianTimeTrackerPlugin extends obsidian.Plugin {
   constructor(app, manifest) {
     super(app, manifest);
     // @ts-ignore
     __publicField(this, "timerService");
+    // @ts-ignore
+    __publicField(this, "indexer");
   }
   async onload() {
     this.timerService = new TimerService(this);
@@ -12258,10 +12723,15 @@ class ObsidianTimeTrackerPlugin extends obsidian.Plugin {
     await this.registerTimerView(pinia);
     await this.registerCodeBlockProcessor(pinia);
     await timerStore.init(this);
-    this.registerTimerEvent();
     this.registerTimerCommand();
     this.initTimerView();
     document.body.toggleClass("@container", true);
+    this.indexer = new ObsidianDirectoryIndexer(this, "Daily Notes");
+    if (!this.app.workspace.layoutReady) {
+      this.app.workspace.onLayoutReady(async () => this.indexer.initialize());
+    } else {
+      await this.indexer.initialize();
+    }
   }
   async registerTimerView(pinia) {
     this.registerView(VIEW_TYPE_TIMER, (leaf) => new TimerRecordView(leaf, this, pinia));
@@ -12275,7 +12745,7 @@ class ObsidianTimeTrackerPlugin extends obsidian.Plugin {
     });
   }
   initTimerView() {
-    this.app.workspace.onLayoutReady(() => {
+    this.app.workspace.onLayoutReady(async () => {
       var _a;
       this.app.workspace.detachLeavesOfType(VIEW_TYPE_TIMER);
       (_a = this.app.workspace.getRightLeaf(false)) == null ? void 0 : _a.setViewState({
@@ -12291,20 +12761,6 @@ class ObsidianTimeTrackerPlugin extends obsidian.Plugin {
       vueApp.use(pinia);
       vueApp.mount(el);
     });
-  }
-  registerTimerEvent() {
-    this.registerEvent(
-      this.app.vault.on("modify", async () => {
-        useTimerStore().entries = await this.timerService.getTodayEntries();
-        useTimerStore().sevenDayEntries = await this.timerService.getRecent7DayEntries();
-      })
-    );
-    this.registerEvent(
-      this.app.vault.on("delete", async () => {
-        useTimerStore().entries = await this.timerService.getTodayEntries();
-        useTimerStore().sevenDayEntries = await this.timerService.getRecent7DayEntries();
-      })
-    );
   }
   registerTimerCommand() {
     this.addCommand({

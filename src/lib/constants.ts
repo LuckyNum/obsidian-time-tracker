@@ -15,7 +15,7 @@ export const DEFAULT_SETTINGS: TimerPluginSettings = {
 export const DEFAULT_QUERY: Query = {
     from: '',
     to: '',
-    type: QueryType.SUMMARY,
+    type: QueryType.NULL,
 };
 
 export const COLORS = [

@@ -20,7 +20,7 @@ export function minuteToTimeString(seconds: number): string {
     ].join(':');
 }
 
-function formatDuration(duration: moment.Duration): string {
+export function formatDuration(duration: moment.Duration): string {
     const hours = Math.floor(duration.asHours());
     const minutes = duration.minutes();
     const seconds = duration.seconds();

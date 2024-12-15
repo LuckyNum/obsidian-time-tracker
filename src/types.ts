@@ -6,6 +6,7 @@ export interface TimeEntry {
     endTime: number;
     duration: number;
     color: string;
+    count?: number;
 }
 
 export interface PresetItem {
@@ -21,6 +22,11 @@ export interface TimerPluginSettings {
     enableCelebration: boolean;
     enableCreateNote: boolean;
     presetItems: PresetItem[];
+}
+
+export interface DailyNotesSettings {
+    folder: string;
+    format: string;
 }
 
 export interface ChartData {
@@ -68,8 +74,7 @@ export enum Keyword {
     GROUP = "GROUP",
     BY = "BY",
     DATE = "DATE",
-    PROJECT = "PROJECT",
-    CLIENT = "CLIENT",
+    TAG = "TAG",
     // Sort lists by
     SORT = "SORT",
     ASC = "ASC",
@@ -85,6 +90,7 @@ export type Token = Keyword | UserInput;
 export enum QueryType {
     SUMMARY = "SUMMARY",
     LIST = "LIST",
+    NULL = "NULL"
 }
 
 export type ISODate = string;
@@ -102,10 +108,8 @@ export enum SortOrder {
     DESC = "DESC",
 }
 export enum GroupBy {
-    /** Group list of time entries by client. */
-    PROJECT = "PROJECT",
-    /** Group list of time entries by project. */
-    CLIENT = "CLIENT",
+    /** Group list of time entries by tag. */
+    TAG = "TAG",
     /** Group list of time entries by date. */
     DATE = "DATE",
 }
@@ -131,3 +135,14 @@ export interface Query {
     customTitle?: string;
 }
 /////// report parser type
+
+export interface FileMetadata {
+    path: string;
+    mtime: number;
+    frontmatter?: any;
+    tags: string[];
+    links: string[];
+    content?: string;
+    headers?: string[];
+    timeEntry?: TimeEntry[];
+}

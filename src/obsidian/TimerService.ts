@@ -176,14 +176,12 @@ export class TimerService {
     }
 
     async addPresetItem(item: PresetItem): Promise<void> {
-        useTimerStore().presetItems.push(item);
-        useTimerStore().settings.presetItems = useTimerStore().presetItems;
+        useTimerStore().settings.presetItems.push(item);
         await this.plugin.saveData(useTimerStore().settings);
     }
 
     async removePresetItem(index: number): Promise<void> {
-        useTimerStore().presetItems.splice(index, 1);
-        useTimerStore().settings.presetItems = useTimerStore().presetItems;
+        useTimerStore().settings.presetItems.splice(index, 1);
         await this.plugin.saveData(useTimerStore().settings);
     }
 

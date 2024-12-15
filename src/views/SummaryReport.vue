@@ -3,14 +3,15 @@ import {computed, defineProps, onBeforeUnmount, onMounted, ref} from "vue";
 import DonutChart from "@/components/DonutChart.vue";
 import BarChart from "@/components/BarChart.vue";
 import ProjectSummaryList from "@/components/ProjectSummaryList.vue";
-import {ChartData, ProjectSummaryItem} from "@/types.ts";
+import {ChartData, ProjectSummaryItem, Query, TimeEntry} from "@/types.ts";
 import {moment} from "obsidian";
 import {minuteToTimeString, secondsToTimeString} from '@/lib/utils.ts'
 import {useTimerStore} from "@/store/TimerStore.ts";
 import {COLORS} from "@/lib/constants.ts";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
 
 const props = defineProps<{
-    title: string,
+    query: Query,
 }>();
 
 const widthElement = ref(null);
@@ -54,13 +55,13 @@ function calculateDuration(startTime: number, endTime: number): number {
 
 function getPieData(): ChartData[] {
     const tagTotals: Record<string, number> = {};
-    useTimerStore().sevenDayEntries.forEach(note => {
-        note.tasks.forEach(task => {
-            const duration = calculateDuration(task.startTime, task.endTime);
-            tagTotals[task.tag] = (tagTotals[task.tag] || 0) + duration;
+    useTimerStore().getTimeRangeEntries(props.query).forEach((timeEntries: TimeEntry[]) => {
+        timeEntries.forEach(entry => {
+            const duration = calculateDuration(entry.startTime, entry.endTime);
+            tagTotals[entry.tag] = (tagTotals[entry.tag] || 0) + duration;
         });
     });
-
+    console.log(11111)
     return Object.entries(tagTotals).map(([tag, minutes], index): ChartData => {
         return {
             name: tag,
@@ -72,28 +73,32 @@ function getPieData(): ChartData[] {
 }
 
 function getBarData(): ChartData[] {
-    return useTimerStore().sevenDayEntries.map(note => {
-        const totalMinutes = note.tasks.reduce((acc, task) =>
+    const result: ChartData[] = [];
+    useTimerStore().getTimeRangeEntries(props.query).forEach((timeEntries: TimeEntry[], fileName: string) => {
+        const totalMinutes = timeEntries.reduce((acc, task) =>
             acc + calculateDuration(task.startTime, task.endTime), 0);
-        return {
-            name: moment(note.date).format("ddd MM-DD").replace(" ", "\n"),
+
+        result.push({
+            name: moment(fileName, `${useTimerStore().dailyNotesSettings?.folder}/${useTimerStore().dailyNotesSettings?.format}`).format("ddd MM-DD").replace(" ", "\n"),
             value: totalMinutes / 60,
-            displayValue: `${note.date} (${secondsToTimeString(totalMinutes * 60)})`,
-        };
-    }).reverse();
+            displayValue: `${fileName} (${secondsToTimeString(totalMinutes * 60)})`,
+        });
+    });
+    console.log(11111)
+    return result.reverse();
 }
 
 function getListData(): ProjectSummaryItem[] {
     const tagTotals: Record<string, number> = {};
     let totalMinutes = 0;
-    useTimerStore().sevenDayEntries.forEach(note => {
-        note.tasks.forEach(task => {
-            const duration = calculateDuration(task.startTime, task.endTime);
+    useTimerStore().getTimeRangeEntries(props.query).forEach((timeEntries: TimeEntry[]) => {
+        timeEntries.forEach(entry => {
+            const duration = calculateDuration(entry.startTime, entry.endTime);
             totalMinutes += duration;
-            tagTotals[task.tag] = (tagTotals[task.tag] || 0) + duration;
+            tagTotals[entry.tag] = (tagTotals[entry.tag] || 0) + duration;
         });
-    });
-
+    })
+    console.log(11111)
     return Object.entries(tagTotals)
         .map(([tag, minutes], index): ProjectSummaryItem => ({
             title: tag,
@@ -106,16 +111,18 @@ function getListData(): ProjectSummaryItem[] {
 </script>
 
 <template>
-    <span class="summary-header">{{ props.title }}</span>
+    <span class="summary-header">{{ props.query.customTitle }}</span>
     <div ref="widthElement" class="summary-container">
-        <BarChart v-if="barWidth && getBarData()" :data="getBarData()" :width="barWidth"/>
+        <BarChart v-if="useTimerStore().initialized && barWidth && getBarData()" :data="getBarData()"
+                  :width="barWidth"/>
         <DonutChart
-            v-if="width >= BREAKPOINT && getPieData()"
+            v-if="useTimerStore().initialized && width >= BREAKPOINT && getPieData()"
             :data="getPieData()"
             :width="DONUT_WIDTH"
         />
     </div>
-    <ProjectSummaryList :data="getListData()"/>
+    <ProjectSummaryList v-if="useTimerStore().initialized && getListData()" :data="getListData()"/>
+    <LoadingSpinner v-if="!useTimerStore().initialized"></LoadingSpinner>
 </template>
 
 <style scoped>
@@ -124,6 +131,7 @@ function getListData(): ProjectSummaryItem[] {
     justify-content: space-between;
     align-items: center;
 }
+
 .summary-header {
     font-weight: 600;
     font-size: 1.25rem;
