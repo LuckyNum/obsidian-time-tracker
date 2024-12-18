@@ -11,8 +11,7 @@ const props = defineProps<{
     timerService: TimerService
 }>();
 
-const timerStore = useTimerStore();
-const {todayEntries, activeEntry, totalDuration, totalDurationNoActive} = storeToRefs(timerStore);
+const {todayEntries, activeEntry, totalDuration, totalDurationNoActive} = storeToRefs(useTimerStore());
 
 const getEntryColor = (index: number) => {
     return COLORS[index % COLORS.length];

@@ -41,3 +41,16 @@ export function formatMinuteDuration(duration: moment.Duration): string {
         minutes.toString().padStart(2, '0'),
     ].join(':');
 }
+
+export function reverseMap<K, V>(originalMap: Map<K, V>): Map<K, V> {
+    // 提取所有键到一个数组中
+    const keys = Array.from(originalMap.keys());
+    // 反转数组
+    keys.reverse();
+    // 创建一个新的 Map 来存储反转顺序后的键值对
+    const reversedMap = new Map<K, V>();
+    for (const key of keys) {
+        reversedMap.set(key, originalMap.get(key)!);
+    }
+    return reversedMap;
+}

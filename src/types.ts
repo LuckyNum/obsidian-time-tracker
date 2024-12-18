@@ -1,3 +1,5 @@
+import {TFile} from "obsidian";
+
 export interface TimeEntry {
     id: number;
     title: string;
@@ -67,8 +69,6 @@ export enum Keyword {
     // inclusion/exclusion keywords
     INCLUDE = "INCLUDE",
     EXCLUDE = "EXCLUDE",
-    PROJECTS = "PROJECTS",
-    CLIENTS = "CLIENTS",
     TAGS = "TAGS",
     // Group lists by
     GROUP = "GROUP",
@@ -95,34 +95,29 @@ export enum QueryType {
 
 export type ISODate = string;
 export type tag = string;
+
 export enum SortOrder {
-    /**
-     * Order dates in chronological order,
-     * or order projects by ascending total time.
-     */
     ASC = "ASC",
-    /**
-     * Order dates in reverse chronological order,
-     * or order projects by descending total time.
-     */
     DESC = "DESC",
 }
+
 export enum GroupBy {
-    /** Group list of time entries by tag. */
     TAG = "TAG",
-    /** Group list of time entries by date. */
     DATE = "DATE",
 }
+
+export enum FilterMode {
+    INCLUDE = "INCLUDE",
+    EXCLUDE = "EXCLUDE",
+    NULL = "NULL",
+}
+
 export interface Query {
     type: QueryType;
     /** Start of query time interval. */
     from: ISODate;
     /** End of query time interval. */
     to: ISODate;
-    /** Optional, list of Toggl project IDs or names to include/exclude. */
-    projectSelection?: Selection;
-    /** Optional, list of Toggl client IDs or names to include/exclude. */
-    clientSelection?: Selection;
     /** Optional, tags to include in the report. */
     includedTags?: tag[];
     /** Optional, tags to exclude in the report. */
@@ -133,7 +128,9 @@ export interface Query {
     groupBy?: GroupBy;
     /** User-defined title for the rendered report. */
     customTitle?: string;
+    error?: string;
 }
+
 /////// report parser type
 
 export interface FileMetadata {
@@ -146,3 +143,5 @@ export interface FileMetadata {
     headers?: string[];
     timeEntry?: TimeEntry[];
 }
+
+export type EntryChangeCallback = (type: string, file: TFile) => void;

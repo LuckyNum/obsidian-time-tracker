@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, defineProps, onBeforeUnmount, onMounted, ref} from "vue";
+import {computed, defineProps, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import DonutChart from "@/components/DonutChart.vue";
 import BarChart from "@/components/BarChart.vue";
 import ProjectSummaryList from "@/components/ProjectSummaryList.vue";
@@ -16,26 +16,38 @@ const props = defineProps<{
 
 const widthElement = ref(null);
 const width = ref(0);
-
 const resizeObserver = new ResizeObserver(entries => {
     for (let entry of entries) {
         width.value = entry.contentRect.width;
     }
 });
 
+const queryData = ref(new Map<string, TimeEntry[]>)
+
 onMounted(async () => {
     if (widthElement.value) {
         resizeObserver.observe(widthElement.value);
     }
-})
+    if (useTimerStore().initialized) {
+        await initData();
+    }
+});
 
 onBeforeUnmount(() => {
     resizeObserver.disconnect();
 });
 
+watch(() => useTimerStore().todayEntries, async () => {
+    await initData();
+});
+
 const BREAKPOINT = 500;
 const DONUT_WIDTH = 190;
 const barWidth = computed(() => computeBarWidth(width.value));
+
+async function initData() {
+    queryData.value = await useTimerStore().getTimeRangeEntries(props.query);
+}
 
 function computeBarWidth(width: number): number {
     if (width >= BREAKPOINT) {
@@ -55,13 +67,12 @@ function calculateDuration(startTime: number, endTime: number): number {
 
 function getPieData(): ChartData[] {
     const tagTotals: Record<string, number> = {};
-    useTimerStore().getTimeRangeEntries(props.query).forEach((timeEntries: TimeEntry[]) => {
-        timeEntries.forEach(entry => {
+    queryData.value.forEach((timeEntries: TimeEntry[]) => {
+        timeEntries?.forEach(entry => {
             const duration = calculateDuration(entry.startTime, entry.endTime);
             tagTotals[entry.tag] = (tagTotals[entry.tag] || 0) + duration;
         });
     });
-    console.log(11111)
     return Object.entries(tagTotals).map(([tag, minutes], index): ChartData => {
         return {
             name: tag,
@@ -74,9 +85,9 @@ function getPieData(): ChartData[] {
 
 function getBarData(): ChartData[] {
     const result: ChartData[] = [];
-    useTimerStore().getTimeRangeEntries(props.query).forEach((timeEntries: TimeEntry[], fileName: string) => {
-        const totalMinutes = timeEntries.reduce((acc, task) =>
-            acc + calculateDuration(task.startTime, task.endTime), 0);
+    queryData.value.forEach((timeEntries: TimeEntry[], fileName: string) => {
+        const totalMinutes = timeEntries?.reduce((acc, task) =>
+            acc + calculateDuration(task.startTime, task.endTime), 0) || 0;
 
         result.push({
             name: moment(fileName, `${useTimerStore().dailyNotesSettings?.folder}/${useTimerStore().dailyNotesSettings?.format}`).format("ddd MM-DD").replace(" ", "\n"),
@@ -84,21 +95,19 @@ function getBarData(): ChartData[] {
             displayValue: `${fileName} (${secondsToTimeString(totalMinutes * 60)})`,
         });
     });
-    console.log(11111)
-    return result.reverse();
+    return result;
 }
 
 function getListData(): ProjectSummaryItem[] {
     const tagTotals: Record<string, number> = {};
     let totalMinutes = 0;
-    useTimerStore().getTimeRangeEntries(props.query).forEach((timeEntries: TimeEntry[]) => {
-        timeEntries.forEach(entry => {
+    queryData.value.forEach((timeEntries: TimeEntry[]) => {
+        timeEntries?.forEach(entry => {
             const duration = calculateDuration(entry.startTime, entry.endTime);
             totalMinutes += duration;
             tagTotals[entry.tag] = (tagTotals[entry.tag] || 0) + duration;
         });
     })
-    console.log(11111)
     return Object.entries(tagTotals)
         .map(([tag, minutes], index): ProjectSummaryItem => ({
             title: tag,

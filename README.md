@@ -3,6 +3,7 @@
 [![GitHub license](https://img.shields.io/github/license/LuckyNum/obsidian-time-tracker)](https://github.com/yourusername/obsidian-time-tracker/blob/main/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/LuckyNum/obsidian-time-tracker)](https://github.com/yourusername/obsidian-time-tracker)
 [![GitHub issues](https://img.shields.io/github/issues/LuckyNum/obsidian-time-tracker)](https://github.com/yourusername/obsidian-time-tracker/issues)
+[![GitHub tag (Latest by date)](https://img.shields.io/github/v/tag/mcndt/obsidian-toggl-integration)](https://github.com/mcndt/obsidian-toggl-integration/releases) ![GitHub all releases](https://img.shields.io/github/downloads/mcndt/obsidian-toggl-integration/total)
 
 Obsidian Time Tracker is a plugin for [Obsidian](https://obsidian.md/) that helps you track the time you spend on your
 notes and tasks within the app.
@@ -11,7 +12,6 @@ notes and tasks within the app.
 
 - **Time Tracking**: Automatically track the time spent on each note.
 - **Reports**: Generate reports to visualize your time spent on different notes or tags.
-- **Integration**: Seamlessly integrates with Obsidian's existing features.
 
 ## Installation
 
@@ -26,11 +26,6 @@ To install Obsidian Time Tracker, follow these steps:
 ## Usage
 
 After installation, you can access the time tracking features from the Obsidian sidebar or through the command palette.
-
-## Contributing
-
-Contributions are welcome! Please see the [contribution guidelines](CONTRIBUTING.md) for more information on how to get
-started.
 
 ## License
 
@@ -47,3 +42,5 @@ If you have any questions or need assistance, feel free to reach out:
 
 - [Obsidian](https://obsidian.md/) for creating such a powerful knowledge base tool.
 - The community for their support and feedback.
+- [Toggl Integration for Obsidian](https://github.com/mcndt/obsidian-toggl-integration) for their excellent work on
+  integrating Toggl Track API with Obsidian, enhancing time tracking capabilities.

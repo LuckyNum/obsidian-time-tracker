@@ -1,20 +1,15 @@
-import {TFile, Component} from 'obsidian';
-import {FileMetadata, TimeEntry} from "@/types.ts";
+import {TFile, Component, Notice} from 'obsidian';
+import {EntryChangeCallback, FileMetadata, TimeEntry} from "@/types.ts";
 import {useTimerStore} from "@/store/TimerStore.ts";
 import {COLORS} from "@/lib/constants.ts";
 import ObsidianTimeTrackerPlugin from "@/index.ts";
 
-export class ObsidianDirectoryIndexer extends Component {
-    //@ts-ignore
-    private initialized: boolean;
-    private store;
-
+export class TimerIndexer extends Component {
     constructor(
         private plugin: ObsidianTimeTrackerPlugin,
+        private callback: EntryChangeCallback
     ) {
         super();
-        this.initialized = false;
-        this.store = useTimerStore();
     }
 
     /**
@@ -22,31 +17,43 @@ export class ObsidianDirectoryIndexer extends Component {
      */
     public async initialize(): Promise<void> {
         try {
-            this.plugin.addStatusBarItem().setText(`开始初始化目录: ${useTimerStore().dailyNotesSettings?.folder}`)
-            const startTime = Date.now();
-            // 初始化事件监听器
-            this.registerEventHandlers();
-            // 初始索引
-            const indexedSize = await this.indexInitialFiles();
-            this.initialized = true;
-            useTimerStore().initialized = true;
-            const duration = (Date.now() - startTime) / 1000;
-            this.plugin.addStatusBarItem().setText(`处理了 ${indexedSize} 个文件，耗时 ${duration}s`)
+            if (!useTimerStore().initialized) {
+                const statusBarItem = this.plugin.addStatusBarItem();
+                statusBarItem.setText(`[TimeTracker] index: ${useTimerStore().dailyNotesSettings?.folder}`);
+
+                const markdownFiles = this.plugin.app.vault.getMarkdownFiles();
+                const skipped = await this.indexInitialFiles(markdownFiles);
+
+                useTimerStore().initialized = true;
+                useTimerStore().refresh();
+
+                statusBarItem.setText(`[TimeTracker] total ${markdownFiles.length}，skipped ${skipped}`);
+                // 设置2秒后自动消失
+                setTimeout(() => {
+                    statusBarItem.hide();
+                }, 3000);
+                // 初始化事件监听器
+                this.registerEventHandlers(this.callback);
+            }
         } catch (error) {
-            console.error('初始化失败:', error);
-            throw error;
+            new Notice(`初始化失败: ${error}`, 2000)
         }
     }
 
     /**
      * 注册事件处理器
      */
-    private registerEventHandlers(): void {
+    private registerEventHandlers(callback: EntryChangeCallback): void {
         // 监听文件修改
         this.registerEvent(
             this.plugin.app.vault.on('modify', async (file) => {
-                if (file instanceof TFile && this.shouldIndexFile(file)) {
-                    await this.indexFile(file);
+                if (file instanceof TFile) {
+                    const shouldIndexFile = await this.shouldIndexFile(file);
+                    if (shouldIndexFile) {
+                        await this.indexFile(file);
+
+                        callback('modify', file)
+                    }
                 }
             })
         );
@@ -55,23 +62,27 @@ export class ObsidianDirectoryIndexer extends Component {
         this.registerEvent(
             this.plugin.app.vault.on('delete', (file) => {
                 if (file instanceof TFile) {
-                    this.store.allEntries?.delete(file.path);
+                    useTimerStore().removeEntriesDB(file.path);
+
+                    callback('delete', file)
                 }
             })
         );
 
         // 监听文件重命名
         this.registerEvent(
-            this.plugin.app.vault.on('rename', (file, oldPath) => {
+            this.plugin.app.vault.on('rename', async (file, oldPath) => {
                 if (file instanceof TFile) {
-                    if (this.store.allEntries?.has(oldPath)) {
-                        const metadata = this.store.allEntries?.get(oldPath);
-                        this.store.allEntries?.delete(oldPath);
-                        if (metadata) {
-                            metadata.path = file.path;
-                            this.store.allEntries?.set(file.path, metadata);
+                    const oldEntry = await useTimerStore().getEntriesDB(oldPath);
+                    if (oldEntry) {
+                        await useTimerStore().removeEntriesDB(file.path);
+                        if (oldEntry) {
+                            oldEntry.path = file.path;
+                            await useTimerStore().setEntriesDB(file.path, oldEntry);
                         }
                     }
+
+                    callback('rename', file)
                 }
             })
         );
@@ -79,8 +90,11 @@ export class ObsidianDirectoryIndexer extends Component {
         // 监听元数据变更
         this.registerEvent(
             this.plugin.app.metadataCache.on('changed', async (file) => {
-                if (this.shouldIndexFile(file)) {
+                const shouldIndex = await this.shouldIndexFile(file);
+                if (shouldIndex) {
                     await this.indexFile(file);
+
+                    callback('changed', file)
                 }
             })
         );
@@ -89,15 +103,21 @@ export class ObsidianDirectoryIndexer extends Component {
     /**
      * 初始化所有文件的索引
      */
-    private async indexInitialFiles(): Promise<number> {
-        const files = this.plugin.app.vault.getMarkdownFiles()
-            .filter(file => this.shouldIndexFile(file));
+    private async indexInitialFiles(files: TFile[]): Promise<number> {
+        let skipped = 0;
+        files.filter(async file => {
+            const shouldIndexFile = await this.shouldIndexFile(file);
+            if (!shouldIndexFile) {
+                skipped++;
+            }
+            return shouldIndexFile
+        });
 
         for (const file of files) {
             await this.indexFile(file);
         }
 
-        return files.length;
+        return skipped;
     }
 
     /**
@@ -111,9 +131,10 @@ export class ObsidianDirectoryIndexer extends Component {
                 mtime: file.stat.mtime,
                 timeEntry: this.extractTimeEntry(content)
             };
-            this.store.allEntries.set(file.path, fileMetadata);
+            await useTimerStore().setEntriesDB(file.path, fileMetadata);
         } catch (error) {
             console.error(`索引文件失败 ${file.path}:`, error);
+            throw error;
         }
     }
 
@@ -125,7 +146,7 @@ export class ObsidianDirectoryIndexer extends Component {
         let isInTimeEntrySection = false;
         const lines = content.split('\n');
         for (const line of lines) {
-            if (line.trim() === this.store.settings.timeEntryHeading) {
+            if (line.trim() === useTimerStore().settings.timeEntryHeading) {
                 isInTimeEntrySection = true;
                 continue;
             }
@@ -152,11 +173,11 @@ export class ObsidianDirectoryIndexer extends Component {
     /**
      * 判断文件是否应该被索引
      */
-    private shouldIndexFile(file: TFile): boolean {
+    private async shouldIndexFile(file: TFile): Promise<boolean> {
         // 检查路径是否在根目录下
         if (!file.path.startsWith(useTimerStore().dailyNotesSettings?.folder || 'Obsidian Time Tracker Daily Note')) return false;
         // 检查文件是否已存在且未修改
-        const existingFile = this.store.allEntries?.get(file.path);
+        const existingFile = await useTimerStore().getEntriesDB(file.path);
         return !(existingFile && existingFile.mtime === file.stat.mtime);
     }
 }
